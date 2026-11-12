@@ -1,0 +1,936 @@
+Summary,Issue Type,Status,Priority,Labels,Labels,Reporter,Created,Description
+[Wiz] High: CVE-2021-23337 in lodash 4.17.20 on payments-api (prod),Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-09-30T09:12:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T01
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0005')
+Wiz Issue ID: vf-0005
+Finding Type: Vulnerability
+Rule: CVE-2021-23337 in lodash
+Severity: HIGH
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.1
+CVE: CVE-2021-23337
+Package: lodash
+Package Type: npm
+Installed Version: 4.17.20
+Fixed Version: 4.17.21
+Location: /app/node_modules/lodash/package.json
+Wiz Status: OPEN
+Detected: 2026-09-30T09:12:00Z
+Description: lodash versions prior to 4.17.21 are vulnerable to command injection via the template function. Image tag 1.4.1 no longer running.
+Remediation: Upgrade lodash to 4.17.21."
+[Wiz] Critical: AWS_ACCESS_KEY exposed in /app/src/config/legacy.js on payments-api (prod),Bug,To Do,Highest,wiz,wiz-secret,wiz-integration,2026-10-21T09:12:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T02
+Wiz URL: https://app.wiz.io/issues#~(issue~'sf-0202')
+Wiz Issue ID: sf-0202
+Finding Type: Secret
+Rule: AWS_ACCESS_KEY detected
+Severity: CRITICAL
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+Secret Type: AWS_ACCESS_KEY
+File Path: /app/src/config/legacy.js
+Wiz Status: OPEN
+Detected: 2026-10-21T09:12:00Z
+Description: Same key fingerprint found inside the payments-api:1.4.2 image layer.
+Remediation: Remove the secret from code and history and rotate the credential."
+[Wiz] High: CVE-2021-23337 in lodash 4.17.20 on payments-api (prod),Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:12:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T03
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0001')
+Wiz Issue ID: vf-0001
+Finding Type: Vulnerability
+Rule: CVE-2021-23337 in lodash
+Severity: HIGH
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+CVE: CVE-2021-23337
+Package: lodash
+Package Type: npm
+Installed Version: 4.17.20
+Fixed Version: 4.17.21
+Location: /app/node_modules/lodash/package.json
+Wiz Status: OPEN
+Detected: 2026-10-21T09:12:00Z
+Description: lodash versions prior to 4.17.21 are vulnerable to command injection via the template function.
+Remediation: Upgrade lodash to 4.17.21."
+[Wiz] Medium: CVE-2020-28500 in lodash 4.17.20 on payments-api (prod),Bug,To Do,Medium,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:12:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T04
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0004')
+Wiz Issue ID: vf-0004
+Finding Type: Vulnerability
+Rule: CVE-2020-28500 in lodash
+Severity: MEDIUM
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+CVE: CVE-2020-28500
+Package: lodash
+Package Type: npm
+Installed Version: 4.17.20
+Fixed Version: 4.17.21
+Location: /app/node_modules/lodash/package.json
+Wiz Status: OPEN
+Detected: 2026-10-21T09:12:00Z
+Description: ReDoS in lodash toNumber, trim and trimEnd functions.
+Remediation: Upgrade lodash to 4.17.21."
+[Wiz] High: CVE-2021-3749 in axios 0.21.1 on payments-api (prod),Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:12:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T05
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0006')
+Wiz Issue ID: vf-0006
+Finding Type: Vulnerability
+Rule: CVE-2021-3749 in axios
+Severity: HIGH
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+CVE: CVE-2021-3749
+Package: axios
+Package Type: npm
+Installed Version: 0.21.1
+Fixed Version: 0.21.2
+Location: /app/node_modules/axios/package.json
+Wiz Status: OPEN
+Detected: 2026-10-21T09:12:00Z
+Description: axios is vulnerable to inefficient regular expression complexity (ReDoS) in trim.
+Remediation: Upgrade axios to 0.21.2."
+[Wiz] Medium: CVE-2024-29041 in express 4.17.1 on payments-api (prod),Bug,To Do,Medium,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:12:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T06
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0008')
+Wiz Issue ID: vf-0008
+Finding Type: Vulnerability
+Rule: CVE-2024-29041 in express
+Severity: MEDIUM
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+CVE: CVE-2024-29041
+Package: express
+Package Type: npm
+Installed Version: 4.17.1
+Fixed Version: 4.19.2
+Location: /app/node_modules/express/package.json
+Wiz Status: OPEN
+Detected: 2026-10-21T09:12:00Z
+Description: Open redirect in express res.location and res.redirect with malformed URLs.
+Remediation: Upgrade express to 4.19.2."
+[Wiz] High: CVE-2022-24999 in qs 6.7.0 on payments-api (prod),Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:12:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T07
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0009')
+Wiz Issue ID: vf-0009
+Finding Type: Vulnerability
+Rule: CVE-2022-24999 in qs
+Severity: HIGH
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+CVE: CVE-2022-24999
+Package: qs
+Package Type: npm
+Installed Version: 6.7.0
+Fixed Version: 6.7.3
+Location: /app/node_modules/qs/package.json
+Wiz Status: OPEN
+Detected: 2026-10-21T09:12:00Z
+Description: qs prototype pollution via __proto__ key. Transitive dependency of express 4.17.1; fixed by the express upgrade.
+Remediation: Upgrade qs to 6.7.3."
+[Wiz] Medium: CVE-2022-23540 in jsonwebtoken 8.5.1 on payments-api (prod),Bug,To Do,Medium,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:12:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T08
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0010')
+Wiz Issue ID: vf-0010
+Finding Type: Vulnerability
+Rule: CVE-2022-23540 in jsonwebtoken
+Severity: MEDIUM
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+CVE: CVE-2022-23540
+Package: jsonwebtoken
+Package Type: npm
+Installed Version: 8.5.1
+Fixed Version: 9.0.0
+Location: /app/node_modules/jsonwebtoken/package.json
+Wiz Status: OPEN
+Detected: 2026-10-21T09:12:00Z
+Description: jsonwebtoken insecure default algorithm in verify() can allow signature validation bypass. Fix is a major version upgrade.
+Remediation: Upgrade jsonwebtoken to 9.0.0."
+[Wiz] High: CVE-2023-4911 in glibc 2.31-13+deb11u5 on payments-api (prod),Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:12:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T09
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0012')
+Wiz Issue ID: vf-0012
+Finding Type: Vulnerability
+Rule: CVE-2023-4911 in glibc
+Severity: HIGH
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+CVE: CVE-2023-4911
+Package: glibc
+Package Type: os
+Installed Version: 2.31-13+deb11u5
+Fixed Version: 2.31-13+deb11u7
+Location: /usr/lib/x86_64-linux-gnu/libc.so.6 (base image node:16-bullseye)
+Wiz Status: OPEN
+Detected: 2026-10-21T09:12:00Z
+Description: Looney Tunables buffer overflow in glibc ld.so GLIBC_TUNABLES. Fixed by rebuilding on a patched base image.
+Remediation: Upgrade glibc to 2.31-13+deb11u7."
+[Wiz] High: CVE-2021-23337 in lodash 4.17.20 on payments-api (staging),Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:14:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T10
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0002')
+Wiz Issue ID: vf-0002
+Finding Type: Vulnerability
+Rule: CVE-2021-23337 in lodash
+Severity: HIGH
+Resource Name: payments-api (staging)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-staging
+Cloud Platform: AWS
+Cloud Account: 111122223333
+Cloud Account Name: acme-demo-dev
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+CVE: CVE-2021-23337
+Package: lodash
+Package Type: npm
+Installed Version: 4.17.20
+Fixed Version: 4.17.21
+Location: /app/node_modules/lodash/package.json
+Wiz Status: OPEN
+Detected: 2026-10-21T09:14:00Z
+Description: lodash versions prior to 4.17.21 are vulnerable to command injection via the template function.
+Remediation: Upgrade lodash to 4.17.21."
+[Wiz] High: CVE-2021-3749 in axios 0.21.1 on payments-api (staging),Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:14:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T11
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0007')
+Wiz Issue ID: vf-0007
+Finding Type: Vulnerability
+Rule: CVE-2021-3749 in axios
+Severity: HIGH
+Resource Name: payments-api (staging)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-staging
+Cloud Platform: AWS
+Cloud Account: 111122223333
+Cloud Account Name: acme-demo-dev
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+CVE: CVE-2021-3749
+Package: axios
+Package Type: npm
+Installed Version: 0.21.1
+Fixed Version: 0.21.2
+Location: /app/node_modules/axios/package.json
+Wiz Status: OPEN
+Detected: 2026-10-21T09:14:00Z
+Description: axios is vulnerable to inefficient regular expression complexity (ReDoS) in trim.
+Remediation: Upgrade axios to 0.21.2."
+[Wiz] High: CVE-2023-4911 in glibc 2.31-13+deb11u5 on report-worker (prod),Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:20:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T12
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0013')
+Wiz Issue ID: vf-0013
+Finding Type: Vulnerability
+Rule: CVE-2023-4911 in glibc
+Severity: HIGH
+Resource Name: report-worker (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-report-worker-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/report-worker:1.4.2
+CVE: CVE-2023-4911
+Package: glibc
+Package Type: os
+Installed Version: 2.31-13+deb11u5
+Fixed Version: 2.31-13+deb11u7
+Location: /usr/lib/x86_64-linux-gnu/libc.so.6 (base image python:3.9-bullseye)
+Wiz Status: OPEN
+Detected: 2026-10-21T09:20:00Z
+Description: Looney Tunables buffer overflow in glibc. Different image and owner from vf-0012.
+Remediation: Upgrade glibc to 2.31-13+deb11u7."
+[Wiz] Critical: CVE-2020-14343 in PyYAML 5.3.1 on report-worker (prod),Bug,To Do,Highest,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:20:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T13
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0014')
+Wiz Issue ID: vf-0014
+Finding Type: Vulnerability
+Rule: CVE-2020-14343 in PyYAML
+Severity: CRITICAL
+Resource Name: report-worker (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-report-worker-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/report-worker:1.4.2
+CVE: CVE-2020-14343
+Package: PyYAML
+Package Type: pypi
+Installed Version: 5.3.1
+Fixed Version: 5.4
+Location: /usr/local/lib/python3.9/site-packages/PyYAML
+Wiz Status: OPEN
+Detected: 2026-10-21T09:20:00Z
+Description: Arbitrary code execution via full_load / FullLoader. Repo acme-demo/report-worker is outside the demo agent allowlist.
+Remediation: Upgrade PyYAML to 5.4."
+[Wiz] Medium: CVE-2023-32681 in requests 2.25.1 on report-worker (prod),Bug,To Do,Medium,wiz,wiz-vulnerability,wiz-integration,2026-10-21T09:20:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T14
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0015')
+Wiz Issue ID: vf-0015
+Finding Type: Vulnerability
+Rule: CVE-2023-32681 in requests
+Severity: MEDIUM
+Resource Name: report-worker (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-report-worker-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/report-worker:1.4.2
+CVE: CVE-2023-32681
+Package: requests
+Package Type: pypi
+Installed Version: 2.25.1
+Fixed Version: 2.31.0
+Location: /usr/local/lib/python3.9/site-packages/requests
+Wiz Status: OPEN
+Detected: 2026-10-21T09:20:00Z
+Description: Proxy-Authorization header leaked to destination on HTTPS redirect.
+Remediation: Upgrade requests to 2.31.0."
+[Wiz] Critical: Publicly exposed container with high severity vulnerability with known exploit and access to sensitive data on payments-api (prod),Bug,To Do,Highest,wiz,wiz-toxic-combination,wiz-integration,2026-10-21T10:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T15
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0111')
+Wiz Issue ID: wiz-iss-0111
+Finding Type: Toxic Combination
+Rule: Publicly exposed container with high severity vulnerability with known exploit and access to sensitive data
+Rule ID: wc-tc-007
+Severity: CRITICAL
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+Wiz Status: OPEN
+Detected: 2026-10-21T10:00:00Z
+Description: payments-api (prod) is internet facing via ALB, runs lodash 4.17.20 (CVE-2021-23337, exploit available), and its role can read the PCI orders bucket.
+Remediation: Upgrade lodash to 4.17.21; this parents vf-0001 and vf-0004."
+[Wiz] Critical: AWS_ACCESS_KEY exposed in src/config/legacy.js:4 on acme-demo/payments-api,Bug,To Do,Highest,wiz,wiz-secret,wiz-integration,2026-10-22T14:02:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T16
+Wiz URL: https://app.wiz.io/issues#~(issue~'sf-0201')
+Wiz Issue ID: sf-0201
+Finding Type: Secret
+Rule: AWS_ACCESS_KEY detected
+Severity: CRITICAL
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+Secret Type: AWS_ACCESS_KEY
+File Path: src/config/legacy.js:4
+Wiz Status: OPEN
+Detected: 2026-10-22T14:02:00Z
+Description: AWS access key id and secret committed in source. Value is a synthetic fake for the demo.
+Remediation: Remove the secret from code and history and rotate the credential."
+[Wiz] High: PRIVATE_KEY exposed in test/fixtures/test-signing-key.pem on acme-demo/payments-api,Bug,To Do,High,wiz,wiz-secret,wiz-integration,2026-10-22T14:02:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T17
+Wiz URL: https://app.wiz.io/issues#~(issue~'sf-0203')
+Wiz Issue ID: sf-0203
+Finding Type: Secret
+Rule: PRIVATE_KEY detected
+Severity: HIGH
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+Secret Type: PRIVATE_KEY
+File Path: test/fixtures/test-signing-key.pem
+Wiz Status: OPEN
+Detected: 2026-10-22T14:02:00Z
+Description: RSA private key in a test fixture, generated for unit tests only.
+Remediation: Remove the secret from code and history and rotate the credential."
+[Wiz] Medium: SLACK_WEBHOOK exposed in test/fixtures/notify.json on acme-demo/payments-api,Bug,To Do,Medium,wiz,wiz-secret,wiz-integration,2026-10-22T14:02:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T18
+Wiz URL: https://app.wiz.io/issues#~(issue~'sf-0204')
+Wiz Issue ID: sf-0204
+Finding Type: Secret
+Rule: SLACK_WEBHOOK detected
+Severity: MEDIUM
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+Secret Type: SLACK_WEBHOOK
+File Path: test/fixtures/notify.json
+Wiz Status: OPEN
+Detected: 2026-10-22T14:02:00Z
+Description: Placeholder Slack webhook URL with FAKE segments in a test fixture.
+Remediation: Remove the secret from code and history and rotate the credential."
+[Wiz] High: CVE-2021-23337 in lodash 4.17.20 on acme-demo/payments-api,Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-10-22T14:02:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T19
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0003')
+Wiz Issue ID: vf-0003
+Finding Type: Vulnerability
+Rule: CVE-2021-23337 in lodash
+Severity: HIGH
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+CVE: CVE-2021-23337
+Package: lodash
+Package Type: npm
+Installed Version: 4.17.20
+Fixed Version: 4.17.21
+Location: package.json
+Wiz Status: OPEN
+Detected: 2026-10-22T14:02:00Z
+Description: lodash versions prior to 4.17.21 are vulnerable to command injection via the template function.
+Remediation: Upgrade lodash to 4.17.21."
+[Wiz] Medium: CVE-2022-25883 in semver 7.3.5 on acme-demo/payments-api,Bug,To Do,Medium,wiz,wiz-vulnerability,wiz-integration,2026-10-22T14:02:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T20
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0011')
+Wiz Issue ID: vf-0011
+Finding Type: Vulnerability
+Rule: CVE-2022-25883 in semver
+Severity: MEDIUM
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+CVE: CVE-2022-25883
+Package: semver
+Package Type: npm
+Installed Version: 7.3.5
+Fixed Version: 7.5.2
+Location: package.json (devDependencies via nodemon)
+Wiz Status: OPEN
+Detected: 2026-10-22T14:02:00Z
+Description: semver ReDoS in new Range(). Present only via a devDependency; not in the runtime image.
+Remediation: Upgrade semver to 7.5.2."
+[Wiz] Medium: CVE-2023-26136 in tough-cookie 4.1.2 on acme-demo/payments-api,Bug,To Do,Medium,wiz,wiz-vulnerability,wiz-integration,2026-10-22T14:02:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T21
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0017')
+Wiz Issue ID: vf-0017
+Finding Type: Vulnerability
+Rule: CVE-2023-26136 in tough-cookie
+Severity: MEDIUM
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+CVE: CVE-2023-26136
+Package: tough-cookie
+Package Type: npm
+Installed Version: 4.1.2
+Fixed Version: 4.1.3
+Location: test/fixtures/vendor/tough-cookie/package.json
+Wiz Status: OPEN
+Detected: 2026-10-22T14:02:00Z
+Description: Prototype pollution in tough-cookie. Detected in a vendored copy under test/fixtures that is never loaded at runtime.
+Remediation: Upgrade tough-cookie to 4.1.3."
+[Wiz] High: Path traversal: user input flows into filesystem path on acme-demo/payments-api,Bug,To Do,High,wiz,wiz-code,wiz-integration,2026-10-22T14:02:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T22
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0112')
+Wiz Issue ID: wiz-iss-0112
+Finding Type: Code
+Rule: Path traversal: user input flows into filesystem path
+Rule ID: wc-sast-js-022
+Severity: HIGH
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+Code Repository: github.com/acme-demo/payments-api
+File Path: src/receipts.js
+Function: resolveReceiptPath
+Wiz Status: OPEN
+Detected: 2026-10-22T14:02:00Z
+Description: src/receipts.js resolveReceiptPath() joins req.query.file onto the receipts directory without normalization. Input like ../../etc/passwd escapes the base directory.
+Remediation: Normalize with path.resolve and reject paths outside RECEIPTS_DIR; add a regression test."
+[Wiz] High: Template injection: user input passed to lodash template on acme-demo/payments-api,Bug,To Do,High,wiz,wiz-code,wiz-integration,2026-10-22T14:02:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T23
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0113')
+Wiz Issue ID: wiz-iss-0113
+Finding Type: Code
+Rule: Template injection: user input passed to lodash template
+Rule ID: wc-sast-js-041
+Severity: HIGH
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+Code Repository: github.com/acme-demo/payments-api
+File Path: src/notify.js
+Function: renderReceiptEmail
+Wiz Status: OPEN
+Detected: 2026-10-22T14:02:00Z
+Description: src/notify.js renders a lodash template whose source string includes user controlled text, the reachable path for CVE-2021-23337.
+Remediation: Do not compile templates from user input; pass user input as data only."
+[Wiz] High: S3 bucket should not allow public read access on acme-demo-receipts-dev,Bug,To Do,High,wiz,wiz-cloud-configuration,wiz-integration,2026-10-23T11:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T24
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0101')
+Wiz Issue ID: wiz-iss-0101
+Finding Type: Cloud Configuration
+Rule: S3 bucket should not allow public read access
+Rule ID: wc-s3-001
+Severity: HIGH
+Resource Name: acme-demo-receipts-dev
+Resource Type: BUCKET
+Resource ID: arn:aws:s3:::acme-demo-receipts-dev
+Cloud Platform: AWS
+Cloud Account: 111122223333
+Cloud Account Name: acme-demo-dev
+Region: us-east-1
+IaC Source: github.com/acme-demo/platform-infra/envs/dev/s3.tf#aws_s3_bucket.receipts
+Wiz Status: OPEN
+Detected: 2026-10-23T11:00:00Z
+Description: Bucket ACL grants READ to AllUsers and public access block is disabled.
+Remediation: Enable S3 Block Public Access and remove public ACL."
+[Wiz] High: S3 bucket should not allow public read access on acme-demo-static-site-prod,Bug,To Do,High,wiz,wiz-cloud-configuration,wiz-integration,2026-10-23T11:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T25
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0103')
+Wiz Issue ID: wiz-iss-0103
+Finding Type: Cloud Configuration
+Rule: S3 bucket should not allow public read access
+Rule ID: wc-s3-001
+Severity: HIGH
+Resource Name: acme-demo-static-site-prod
+Resource Type: BUCKET
+Resource ID: arn:aws:s3:::acme-demo-static-site-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+IaC Source: github.com/acme-demo/platform-infra/envs/prod/static_site.tf#aws_s3_bucket.static_site
+Wiz Status: OPEN
+Detected: 2026-10-23T11:00:00Z
+Description: Bucket hosts the public marketing site. Tagged public-intended=true and data-classification=public.
+Remediation: If intended, record a risk acceptance or Wiz ignore rule."
+[Wiz] High: Security group allows unrestricted SSH (0.0.0.0/0:22) on dev-bastion-sg,Bug,To Do,High,wiz,wiz-cloud-configuration,wiz-integration,2026-10-23T11:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T26
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0104')
+Wiz Issue ID: wiz-iss-0104
+Finding Type: Cloud Configuration
+Rule: Security group allows unrestricted SSH (0.0.0.0/0:22)
+Rule ID: wc-ec2-022
+Severity: HIGH
+Resource Name: dev-bastion-sg
+Resource Type: SECURITY_GROUP
+Resource ID: sg-0a1b2c3d4e5f60001
+Cloud Platform: AWS
+Cloud Account: 111122223333
+Cloud Account Name: acme-demo-dev
+Region: us-east-1
+IaC Source: github.com/acme-demo/platform-infra/modules/bastion/main.tf#module.bastion.aws_security_group.bastion
+Wiz Status: OPEN
+Detected: 2026-10-23T11:00:00Z
+Description: Ingress rule allows TCP 22 from 0.0.0.0/0.
+Remediation: Restrict SSH to the corporate VPN CIDR or use SSM Session Manager."
+[Wiz] High: Security group allows unrestricted SSH (0.0.0.0/0:22) on dev-bastion-sg,Bug,To Do,High,wiz,wiz-cloud-configuration,wiz-integration,2026-10-23T11:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T27
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0105')
+Wiz Issue ID: wiz-iss-0105
+Finding Type: Cloud Configuration
+Rule: Security group allows unrestricted SSH (0.0.0.0/0:22)
+Rule ID: wc-ec2-022
+Severity: HIGH
+Resource Name: dev-bastion-sg
+Resource Type: SECURITY_GROUP
+Resource ID: sg-0a1b2c3d4e5f60002
+Cloud Platform: AWS
+Cloud Account: 111122223333
+Cloud Account Name: acme-demo-dev
+Region: us-west-2
+IaC Source: github.com/acme-demo/platform-infra/modules/bastion/main.tf#module.bastion.aws_security_group.bastion
+Wiz Status: OPEN
+Detected: 2026-10-23T11:00:00Z
+Description: Same Terraform module deployed to a second region.
+Remediation: Fix the shared module; one PR closes both."
+[Wiz] Low: S3 bucket default encryption and versioning should be enabled on acme-demo-app-logs-dev,Bug,To Do,Low,wiz,wiz-cloud-configuration,wiz-integration,2026-10-23T11:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T28
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0107')
+Wiz Issue ID: wiz-iss-0107
+Finding Type: Cloud Configuration
+Rule: S3 bucket default encryption and versioning should be enabled
+Rule ID: wc-s3-014
+Severity: LOW
+Resource Name: acme-demo-app-logs-dev
+Resource Type: BUCKET
+Resource ID: arn:aws:s3:::acme-demo-app-logs-dev
+Cloud Platform: AWS
+Cloud Account: 111122223333
+Cloud Account Name: acme-demo-dev
+Region: us-east-1
+IaC Source: github.com/acme-demo/platform-infra/envs/dev/s3.tf#aws_s3_bucket.app_logs
+Wiz Status: OPEN
+Detected: 2026-10-23T11:00:00Z
+Description: No server side encryption configuration and versioning disabled.
+Remediation: Add aws_s3_bucket_server_side_encryption_configuration and versioning."
+[Wiz] Low: CloudTrail should be enabled in all regions on acme-demo-dev,Bug,To Do,Low,wiz,wiz-cloud-configuration,wiz-integration,2026-10-23T11:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T29
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0110')
+Wiz Issue ID: wiz-iss-0110
+Finding Type: Cloud Configuration
+Rule: CloudTrail should be enabled in all regions
+Rule ID: wc-ct-001
+Severity: LOW
+Resource Name: acme-demo-dev
+Resource Type: SUBSCRIPTION
+Resource ID: 111122223333
+Cloud Platform: AWS
+Cloud Account: 111122223333
+Cloud Account Name: acme-demo-dev
+Region: global
+Wiz Status: OPEN
+Detected: 2026-10-23T11:00:00Z
+Description: Multi-region trail missing in the sandbox account. Org-level trail covers this account.
+Remediation: Verify org trail; likely false positive."
+[Wiz] High: IaC: S3 bucket ACL allows public read on aws_s3_bucket.receipts,Bug,To Do,High,wiz,wiz-cloud-configuration,wiz-integration,2026-10-23T11:05:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T30
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0102')
+Wiz Issue ID: wiz-iss-0102
+Finding Type: Cloud Configuration
+Rule: IaC: S3 bucket ACL allows public read
+Rule ID: wc-iac-s3-001
+Severity: HIGH
+Resource Name: aws_s3_bucket.receipts
+Resource Type: IAC_RESOURCE
+Resource ID: envs/dev/s3.tf#aws_s3_bucket.receipts
+IaC Source: github.com/acme-demo/platform-infra/envs/dev/s3.tf#aws_s3_bucket.receipts
+Wiz Status: OPEN
+Detected: 2026-10-23T11:05:00Z
+Description: Wiz Code IaC scan of acme-demo/platform-infra. Same resource as wiz-iss-0101 (code to cloud).
+Remediation: Set acl to private and add aws_s3_bucket_public_access_block."
+[Wiz] Critical: Security group allows database port from the internet (0.0.0.0/0:5432) on prod-orders-db-sg,Bug,To Do,Highest,wiz,wiz-toxic-combination,wiz-integration,2026-10-24T08:30:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T31
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0106')
+Wiz Issue ID: wiz-iss-0106
+Finding Type: Toxic Combination
+Rule: Security group allows database port from the internet (0.0.0.0/0:5432)
+Rule ID: wc-ec2-031
+Severity: CRITICAL
+Resource Name: prod-orders-db-sg
+Resource Type: SECURITY_GROUP
+Resource ID: sg-0f9e8d7c6b5a40003
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+IaC Source: github.com/acme-demo/platform-infra/envs/prod/rds.tf#aws_security_group.orders_db
+Wiz Status: OPEN
+Detected: 2026-10-24T08:30:00Z
+Description: Toxic combination: Postgres 5432 open to 0.0.0.0/0 on an RDS instance holding PCI-tagged data.
+Remediation: Restrict ingress to the application security group."
+[Wiz] Medium: RDS instance storage should be encrypted at rest on prod-orders-db,Bug,To Do,Medium,wiz,wiz-cloud-configuration,wiz-integration,2026-10-24T08:30:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T32
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0108')
+Wiz Issue ID: wiz-iss-0108
+Finding Type: Cloud Configuration
+Rule: RDS instance storage should be encrypted at rest
+Rule ID: wc-rds-004
+Severity: MEDIUM
+Resource Name: prod-orders-db
+Resource Type: DB
+Resource ID: arn:aws:rds:us-east-1:444455556666:db:prod-orders-db
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+IaC Source: github.com/acme-demo/platform-infra/envs/prod/rds.tf#aws_db_instance.orders
+Wiz Status: OPEN
+Detected: 2026-10-24T08:30:00Z
+Description: storage_encrypted = false. Fixing requires snapshot, copy with encryption, and restore (replacement).
+Remediation: Plan a maintenance window; human owned."
+[Wiz] High: IAM role with AdministratorAccess attached to compute workload on eks-node-role-prod,Bug,To Do,High,wiz,wiz-cloud-configuration,wiz-integration,2026-10-24T08:30:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T33
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0109')
+Wiz Issue ID: wiz-iss-0109
+Finding Type: Cloud Configuration
+Rule: IAM role with AdministratorAccess attached to compute workload
+Rule ID: wc-iam-010
+Severity: HIGH
+Resource Name: eks-node-role-prod
+Resource Type: IAM_ROLE
+Resource ID: arn:aws:iam::444455556666:role/eks-node-role-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: global
+IaC Source: github.com/acme-demo/platform-infra/envs/prod/iam.tf#aws_iam_role_policy_attachment.node_admin
+Wiz Status: OPEN
+Detected: 2026-10-24T08:30:00Z
+Description: EKS node role has the AdministratorAccess managed policy.
+Remediation: Replace with least-privilege policy; requires human review."
+[Wiz] Critical: CVE-2021-44228 in log4j-core 2.14.1 on legacy-batch-01,Bug,To Do,Highest,wiz,wiz-vulnerability,wiz-integration,2026-10-25T03:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T34
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0016')
+Wiz Issue ID: vf-0016
+Finding Type: Vulnerability
+Rule: CVE-2021-44228 in log4j-core
+Severity: CRITICAL
+Resource Name: legacy-batch-01
+Resource Type: VIRTUAL_MACHINE
+Resource ID: vm-legacy-batch-01
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+CVE: CVE-2021-44228
+Package: log4j-core
+Package Type: maven
+Installed Version: 2.14.1
+Fixed Version: 2.17.1
+Location: /opt/batch/lib/log4j-core-2.14.1.jar
+Wiz Status: OPEN
+Detected: 2026-10-25T03:00:00Z
+Description: Log4Shell remote code execution. VM is stopped and tagged for decommission; no source repository mapped.
+Remediation: Upgrade log4j-core to 2.17.1."
+[Wiz] Critical: Publicly exposed container with high severity vulnerability with known exploit and access to sensitive data on payments-api (prod),Bug,To Do,Highest,wiz,wiz-toxic-combination,wiz-integration,2026-11-03T12:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T35
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0111')
+Wiz Issue ID: wiz-iss-0111
+Finding Type: Toxic Combination
+Rule: Publicly exposed container with high severity vulnerability with known exploit and access to sensitive data
+Rule ID: wc-tc-007
+Severity: CRITICAL
+Resource Name: payments-api (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-payments-api-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2
+Wiz Status: OPEN
+Detected: 2026-11-03T12:00:00Z
+Description: Re-delivered by the Wiz automation after a rescan (same issue id). Ingestion must update, not create.
+Remediation: Upgrade lodash to 4.17.21."
+[Wiz] High: CVE-2021-23337 in lodash 4.17.20 on orders-service (prod),Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-11-05T09:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T36
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0018')
+Wiz Issue ID: vf-0018
+Finding Type: Vulnerability
+Rule: CVE-2021-23337 in lodash
+Severity: HIGH
+Resource Name: orders-service (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-orders-service-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/orders-service:2.3.0
+CVE: CVE-2021-23337
+Package: lodash
+Package Type: npm
+Installed Version: 4.17.20
+Fixed Version: 4.17.21
+Location: /app/node_modules/lodash/package.json
+Wiz Status: OPEN
+Detected: 2026-11-05T09:00:00Z
+Description: lodash versions prior to 4.17.21 are vulnerable to command injection via the template function.
+Remediation: Upgrade lodash to 4.17.21."
+[Wiz] High: CVE-2021-23337 in lodash 4.17.20 on acme-demo/orders-service,Bug,To Do,High,wiz,wiz-vulnerability,wiz-integration,2026-11-05T09:05:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T37
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0019')
+Wiz Issue ID: vf-0019
+Finding Type: Vulnerability
+Rule: CVE-2021-23337 in lodash
+Severity: HIGH
+Resource Name: acme-demo/orders-service
+Resource Type: REPOSITORY
+Resource ID: repo-orders-service
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/orders-service
+CVE: CVE-2021-23337
+Package: lodash
+Package Type: npm
+Installed Version: 4.17.20
+Fixed Version: 4.17.21
+Location: package.json
+Wiz Status: OPEN
+Detected: 2026-11-05T09:05:00Z
+Description: lodash versions prior to 4.17.21 are vulnerable to command injection via the template function.
+Remediation: Upgrade lodash to 4.17.21."
+[Wiz] High: SQL injection: user input concatenated into SQL query on acme-demo/payments-api,Bug,To Do,High,wiz,wiz-code,wiz-integration,2026-11-05T09:10:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T38
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0114')
+Wiz Issue ID: wiz-iss-0114
+Finding Type: Code
+Rule: SQL injection: user input concatenated into SQL query
+Rule ID: wc-sast-js-089
+Severity: HIGH
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+Code Repository: github.com/acme-demo/payments-api
+File Path: src/refunds.js
+Function: findRefundsByOrder
+Wiz Status: OPEN
+Detected: 2026-11-05T09:10:00Z
+Description: src/refunds.js findRefundsByOrder() concatenates req.query.orderId into a quoted string literal in the WHERE clause. Input like x' OR '1'='1 returns every customer's refunds.
+Remediation: Bind the order id with a ? placeholder; add a regression test."
+[Wiz] High: SQL injection: user input concatenated into SQL query on acme-demo/orders-service,Bug,To Do,High,wiz,wiz-code,wiz-integration,2026-11-05T09:10:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T39
+Wiz URL: https://app.wiz.io/issues#~(issue~'wiz-iss-0115')
+Wiz Issue ID: wiz-iss-0115
+Finding Type: Code
+Rule: SQL injection: user input concatenated into SQL query
+Rule ID: wc-sast-js-089
+Severity: HIGH
+Resource Name: acme-demo/orders-service
+Resource Type: REPOSITORY
+Resource ID: repo-orders-service
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/orders-service
+Code Repository: github.com/acme-demo/orders-service
+File Path: src/orders.js
+Function: listOrders
+Wiz Status: OPEN
+Detected: 2026-11-05T09:10:00Z
+Description: src/orders.js listOrders() interpolates req.query.sort and req.query.dir into ORDER BY. The customer id is bound, but an ORDER BY expression can read api_keys through the result order.
+Remediation: Map sort and direction through an allowlist (placeholders cannot bind identifiers); add a regression test."
+[Wiz] Critical: STRIPE_API_KEY exposed in src/config/billing.js:4 on acme-demo/payments-api,Bug,To Do,Highest,wiz,wiz-secret,wiz-integration,2026-11-05T09:20:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T40
+Wiz URL: https://app.wiz.io/issues#~(issue~'sf-0205')
+Wiz Issue ID: sf-0205
+Finding Type: Secret
+Rule: STRIPE_API_KEY detected
+Severity: CRITICAL
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+Secret Type: STRIPE_API_KEY
+File Path: src/config/billing.js:4
+Wiz Status: OPEN
+Detected: 2026-11-05T09:20:00Z
+Description: Payment provider secret key hardcoded in runtime config. Value is a synthetic fake for the demo.
+Remediation: Remove the secret from code and history and rotate the credential."
+[Wiz] High: STRIPE_API_KEY exposed in test/fixtures/stripe-webhook-event.json:5 on acme-demo/orders-service,Bug,To Do,High,wiz,wiz-secret,wiz-integration,2026-11-05T09:20:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T41
+Wiz URL: https://app.wiz.io/issues#~(issue~'sf-0206')
+Wiz Issue ID: sf-0206
+Finding Type: Secret
+Rule: STRIPE_API_KEY detected
+Severity: HIGH
+Resource Name: acme-demo/orders-service
+Resource Type: REPOSITORY
+Resource ID: repo-orders-service
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/orders-service
+Secret Type: STRIPE_API_KEY
+File Path: test/fixtures/stripe-webhook-event.json:5
+Wiz Status: OPEN
+Detected: 2026-11-05T09:20:00Z
+Description: Payment provider key in a recorded webhook test fixture. Placeholder value, never loaded at runtime.
+Remediation: Remove the secret from code and history and rotate the credential."
+[Wiz] Medium: CVE-2022-23540 in jsonwebtoken 8.5.1 on orders-service (prod),Bug,To Do,Medium,wiz,wiz-vulnerability,wiz-integration,2026-11-06T09:00:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T42
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0020')
+Wiz Issue ID: vf-0020
+Finding Type: Vulnerability
+Rule: CVE-2022-23540 in jsonwebtoken
+Severity: MEDIUM
+Resource Name: orders-service (prod)
+Resource Type: CONTAINER_IMAGE_WORKLOAD
+Resource ID: k8s-orders-service-prod
+Cloud Platform: AWS
+Cloud Account: 444455556666
+Cloud Account Name: acme-demo-prod
+Region: us-east-1
+Image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/orders-service:2.3.0
+CVE: CVE-2022-23540
+Package: jsonwebtoken
+Package Type: npm
+Installed Version: 8.5.1
+Fixed Version: 9.0.0
+Location: /app/node_modules/jsonwebtoken/package.json
+Wiz Status: OPEN
+Detected: 2026-11-06T09:00:00Z
+Description: jsonwebtoken insecure default algorithm in verify() can allow signature validation bypass. Fix is a major version upgrade.
+Remediation: Upgrade jsonwebtoken to 9.0.0."
+[Wiz] Medium: CVE-2022-23540 in jsonwebtoken 8.5.1 on acme-demo/payments-api,Bug,To Do,Medium,wiz,wiz-vulnerability,wiz-integration,2026-11-06T09:05:00Z,"[SYNTHETIC DEMO DATA]
+Demo Ref: T43
+Wiz URL: https://app.wiz.io/issues#~(issue~'vf-0021')
+Wiz Issue ID: vf-0021
+Finding Type: Vulnerability
+Rule: CVE-2022-23540 in jsonwebtoken
+Severity: MEDIUM
+Resource Name: acme-demo/payments-api
+Resource Type: REPOSITORY
+Resource ID: repo-payments-api
+Cloud Platform: GitHub
+Code Repository: github.com/acme-demo/payments-api
+CVE: CVE-2022-23540
+Package: jsonwebtoken
+Package Type: npm
+Installed Version: 8.5.1
+Fixed Version: 9.0.0
+Location: package.json
+Wiz Status: OPEN
+Detected: 2026-11-06T09:05:00Z
+Description: jsonwebtoken insecure default algorithm in verify() can allow signature validation bypass. Fix is a major version upgrade.
+Remediation: Upgrade jsonwebtoken to 9.0.0."

@@ -1,0 +1,705 @@
+{
+  "_synthetic": "SYNTHETIC DEMO DATA - not real findings, resources, or credentials",
+  "_generatedFor": "Wiz to Jira agentic security factory demo",
+  "_shape": "Approximates Wiz GraphQL/API exports. Field names follow Wiz conventions but are not guaranteed to match a live tenant schema.",
+  "data": {
+    "issues": {
+      "nodes": [
+        {
+          "id": "wiz-iss-0101",
+          "sourceRule": {
+            "id": "wc-s3-001",
+            "name": "S3 bucket should not allow public read access"
+          },
+          "severity": "HIGH",
+          "type": "CLOUD_CONFIGURATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-23T11:00:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "Bucket ACL grants READ to AllUsers and public access block is disabled.",
+          "remediation": "Enable S3 Block Public Access and remove public ACL.",
+          "entitySnapshot": {
+            "id": "s3-acme-demo-receipts-dev",
+            "type": "BUCKET",
+            "nativeType": "s3#Bucket",
+            "name": "acme-demo-receipts-dev",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "111122223333",
+            "subscriptionName": "acme-demo-dev",
+            "region": "us-east-1",
+            "externalId": "arn:aws:s3:::acme-demo-receipts-dev",
+            "tags": {
+              "environment": "dev",
+              "owner-team": "payments",
+              "managed-by": "terraform"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/platform-infra",
+            "path": "envs/dev/s3.tf",
+            "resourceAddress": "aws_s3_bucket.receipts",
+            "branch": "main"
+          }
+        },
+        {
+          "id": "wiz-iss-0102",
+          "sourceRule": {
+            "id": "wc-iac-s3-001",
+            "name": "IaC: S3 bucket ACL allows public read"
+          },
+          "severity": "HIGH",
+          "type": "CLOUD_CONFIGURATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-23T11:05:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "Wiz Code IaC scan of acme-demo/platform-infra. Same resource as wiz-iss-0101 (code to cloud).",
+          "remediation": "Set acl to private and add aws_s3_bucket_public_access_block.",
+          "entitySnapshot": {
+            "id": "iac-aws_s3_bucket.receipts",
+            "type": "IAC_RESOURCE",
+            "name": "aws_s3_bucket.receipts",
+            "nativeType": "terraform",
+            "externalId": "envs/dev/s3.tf#aws_s3_bucket.receipts",
+            "tags": {
+              "environment": "dev",
+              "owner-team": "platform"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "detectionSource": "WIZ_CODE",
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/platform-infra",
+            "path": "envs/dev/s3.tf",
+            "resourceAddress": "aws_s3_bucket.receipts",
+            "branch": "main"
+          }
+        },
+        {
+          "id": "wiz-iss-0103",
+          "sourceRule": {
+            "id": "wc-s3-001",
+            "name": "S3 bucket should not allow public read access"
+          },
+          "severity": "HIGH",
+          "type": "CLOUD_CONFIGURATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-23T11:00:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "Bucket hosts the public marketing site. Tagged public-intended=true and data-classification=public.",
+          "remediation": "If intended, record a risk acceptance or Wiz ignore rule.",
+          "entitySnapshot": {
+            "id": "s3-acme-demo-static-site-prod",
+            "type": "BUCKET",
+            "nativeType": "s3#Bucket",
+            "name": "acme-demo-static-site-prod",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "444455556666",
+            "subscriptionName": "acme-demo-prod",
+            "region": "us-east-1",
+            "externalId": "arn:aws:s3:::acme-demo-static-site-prod",
+            "tags": {
+              "environment": "prod",
+              "owner-team": "payments",
+              "managed-by": "terraform",
+              "public-intended": "true",
+              "data-classification": "public"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/platform-infra",
+            "path": "envs/prod/static_site.tf",
+            "resourceAddress": "aws_s3_bucket.static_site",
+            "branch": "main"
+          },
+          "expectedOutcome": "FALSE_POSITIVE"
+        },
+        {
+          "id": "wiz-iss-0104",
+          "sourceRule": {
+            "id": "wc-ec2-022",
+            "name": "Security group allows unrestricted SSH (0.0.0.0/0:22)"
+          },
+          "severity": "HIGH",
+          "type": "CLOUD_CONFIGURATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-23T11:00:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "Ingress rule allows TCP 22 from 0.0.0.0/0.",
+          "remediation": "Restrict SSH to the corporate VPN CIDR or use SSM Session Manager.",
+          "entitySnapshot": {
+            "id": "sg-0a1b2c3d4e5f60001",
+            "type": "SECURITY_GROUP",
+            "nativeType": "ec2#SecurityGroup",
+            "name": "dev-bastion-sg",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "111122223333",
+            "subscriptionName": "acme-demo-dev",
+            "region": "us-east-1",
+            "externalId": "sg-0a1b2c3d4e5f60001",
+            "tags": {
+              "environment": "dev",
+              "owner-team": "platform",
+              "managed-by": "terraform"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/platform-infra",
+            "path": "modules/bastion/main.tf",
+            "resourceAddress": "module.bastion.aws_security_group.bastion",
+            "branch": "main"
+          }
+        },
+        {
+          "id": "wiz-iss-0105",
+          "sourceRule": {
+            "id": "wc-ec2-022",
+            "name": "Security group allows unrestricted SSH (0.0.0.0/0:22)"
+          },
+          "severity": "HIGH",
+          "type": "CLOUD_CONFIGURATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-23T11:00:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "Same Terraform module deployed to a second region.",
+          "remediation": "Fix the shared module; one PR closes both.",
+          "entitySnapshot": {
+            "id": "sg-0a1b2c3d4e5f60002",
+            "type": "SECURITY_GROUP",
+            "nativeType": "ec2#SecurityGroup",
+            "name": "dev-bastion-sg",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "111122223333",
+            "subscriptionName": "acme-demo-dev",
+            "region": "us-west-2",
+            "externalId": "sg-0a1b2c3d4e5f60002",
+            "tags": {
+              "environment": "dev",
+              "owner-team": "platform",
+              "managed-by": "terraform"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/platform-infra",
+            "path": "modules/bastion/main.tf",
+            "resourceAddress": "module.bastion.aws_security_group.bastion",
+            "branch": "main"
+          }
+        },
+        {
+          "id": "wiz-iss-0106",
+          "sourceRule": {
+            "id": "wc-ec2-031",
+            "name": "Security group allows database port from the internet (0.0.0.0/0:5432)"
+          },
+          "severity": "CRITICAL",
+          "type": "TOXIC_COMBINATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-24T08:30:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "Toxic combination: Postgres 5432 open to 0.0.0.0/0 on an RDS instance holding PCI-tagged data.",
+          "remediation": "Restrict ingress to the application security group.",
+          "entitySnapshot": {
+            "id": "sg-0f9e8d7c6b5a40003",
+            "type": "SECURITY_GROUP",
+            "nativeType": "ec2#SecurityGroup",
+            "name": "prod-orders-db-sg",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "444455556666",
+            "subscriptionName": "acme-demo-prod",
+            "region": "us-east-1",
+            "externalId": "sg-0f9e8d7c6b5a40003",
+            "tags": {
+              "environment": "prod",
+              "owner-team": "payments",
+              "managed-by": "terraform",
+              "data-classification": "pci"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/platform-infra",
+            "path": "envs/prod/rds.tf",
+            "resourceAddress": "aws_security_group.orders_db",
+            "branch": "main"
+          }
+        },
+        {
+          "id": "wiz-iss-0107",
+          "sourceRule": {
+            "id": "wc-s3-014",
+            "name": "S3 bucket default encryption and versioning should be enabled"
+          },
+          "severity": "LOW",
+          "type": "CLOUD_CONFIGURATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-23T11:00:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "No server side encryption configuration and versioning disabled.",
+          "remediation": "Add aws_s3_bucket_server_side_encryption_configuration and versioning.",
+          "entitySnapshot": {
+            "id": "s3-acme-demo-app-logs-dev",
+            "type": "BUCKET",
+            "nativeType": "s3#Bucket",
+            "name": "acme-demo-app-logs-dev",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "111122223333",
+            "subscriptionName": "acme-demo-dev",
+            "region": "us-east-1",
+            "externalId": "arn:aws:s3:::acme-demo-app-logs-dev",
+            "tags": {
+              "environment": "dev",
+              "owner-team": "platform",
+              "managed-by": "terraform"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/platform-infra",
+            "path": "envs/dev/s3.tf",
+            "resourceAddress": "aws_s3_bucket.app_logs",
+            "branch": "main"
+          }
+        },
+        {
+          "id": "wiz-iss-0108",
+          "sourceRule": {
+            "id": "wc-rds-004",
+            "name": "RDS instance storage should be encrypted at rest"
+          },
+          "severity": "MEDIUM",
+          "type": "CLOUD_CONFIGURATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-24T08:30:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "storage_encrypted = false. Fixing requires snapshot, copy with encryption, and restore (replacement).",
+          "remediation": "Plan a maintenance window; human owned.",
+          "entitySnapshot": {
+            "id": "rds-prod-orders-db",
+            "type": "DB",
+            "nativeType": "rds#DBInstance",
+            "name": "prod-orders-db",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "444455556666",
+            "subscriptionName": "acme-demo-prod",
+            "region": "us-east-1",
+            "externalId": "arn:aws:rds:us-east-1:444455556666:db:prod-orders-db",
+            "tags": {
+              "environment": "prod",
+              "owner-team": "payments",
+              "managed-by": "terraform",
+              "data-classification": "pci"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/platform-infra",
+            "path": "envs/prod/rds.tf",
+            "resourceAddress": "aws_db_instance.orders",
+            "branch": "main"
+          }
+        },
+        {
+          "id": "wiz-iss-0109",
+          "sourceRule": {
+            "id": "wc-iam-010",
+            "name": "IAM role with AdministratorAccess attached to compute workload"
+          },
+          "severity": "HIGH",
+          "type": "CLOUD_CONFIGURATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-24T08:30:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "EKS node role has the AdministratorAccess managed policy.",
+          "remediation": "Replace with least-privilege policy; requires human review.",
+          "entitySnapshot": {
+            "id": "iam-role-eks-node-prod",
+            "type": "IAM_ROLE",
+            "nativeType": "iam#Role",
+            "name": "eks-node-role-prod",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "444455556666",
+            "subscriptionName": "acme-demo-prod",
+            "region": "global",
+            "externalId": "arn:aws:iam::444455556666:role/eks-node-role-prod",
+            "tags": {
+              "environment": "prod",
+              "owner-team": "payments",
+              "managed-by": "terraform"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/platform-infra",
+            "path": "envs/prod/iam.tf",
+            "resourceAddress": "aws_iam_role_policy_attachment.node_admin",
+            "branch": "main"
+          }
+        },
+        {
+          "id": "wiz-iss-0110",
+          "sourceRule": {
+            "id": "wc-ct-001",
+            "name": "CloudTrail should be enabled in all regions"
+          },
+          "severity": "LOW",
+          "type": "CLOUD_CONFIGURATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-23T11:00:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "Multi-region trail missing in the sandbox account. Org-level trail covers this account.",
+          "remediation": "Verify org trail; likely false positive.",
+          "entitySnapshot": {
+            "id": "acct-111122223333",
+            "type": "SUBSCRIPTION",
+            "nativeType": "account",
+            "name": "acme-demo-dev",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "111122223333",
+            "subscriptionName": "acme-demo-dev",
+            "region": "global",
+            "externalId": "111122223333",
+            "tags": {
+              "environment": "dev",
+              "owner-team": "platform",
+              "managed-by": "terraform"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "expectedOutcome": "FALSE_POSITIVE"
+        },
+        {
+          "id": "wiz-iss-0111",
+          "sourceRule": {
+            "id": "wc-tc-007",
+            "name": "Publicly exposed container with high severity vulnerability with known exploit and access to sensitive data"
+          },
+          "severity": "CRITICAL",
+          "type": "TOXIC_COMBINATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-21T10:00:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "payments-api (prod) is internet facing via ALB, runs lodash 4.17.20 (CVE-2021-23337, exploit available), and its role can read the PCI orders bucket.",
+          "remediation": "Upgrade lodash to 4.17.21; this parents vf-0001 and vf-0004.",
+          "entitySnapshot": {
+            "id": "k8s-payments-api-prod",
+            "type": "CONTAINER_IMAGE_WORKLOAD",
+            "name": "payments-api (prod)",
+            "imageName": "123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2",
+            "cluster": "eks-prod",
+            "namespace": "payments-api",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "444455556666",
+            "region": "us-east-1",
+            "isInternetFacing": true,
+            "tags": {
+              "environment": "prod",
+              "owner-team": "payments"
+            },
+            "codeOrigin": {
+              "repository": "github.com/acme-demo/payments-api",
+              "path": "Dockerfile"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "relatedFindings": [
+            "vf-0001",
+            "vf-0004"
+          ]
+        },
+        {
+          "id": "wiz-iss-0111",
+          "sourceRule": {
+            "id": "wc-tc-007",
+            "name": "Publicly exposed container with high severity vulnerability with known exploit and access to sensitive data"
+          },
+          "severity": "CRITICAL",
+          "type": "TOXIC_COMBINATION",
+          "status": "OPEN",
+          "createdAt": "2026-10-21T10:00:00Z",
+          "updatedAt": "2026-11-03T12:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "Re-delivered by the Wiz automation after a rescan (same issue id). Ingestion must update, not create.",
+          "remediation": "Upgrade lodash to 4.17.21.",
+          "entitySnapshot": {
+            "id": "k8s-payments-api-prod",
+            "type": "CONTAINER_IMAGE_WORKLOAD",
+            "name": "payments-api (prod)",
+            "imageName": "123456789012.dkr.ecr.us-east-1.amazonaws.com/acme-demo/payments-api:1.4.2",
+            "cluster": "eks-prod",
+            "namespace": "payments-api",
+            "cloudPlatform": "AWS",
+            "subscriptionExternalId": "444455556666",
+            "region": "us-east-1",
+            "isInternetFacing": true,
+            "tags": {
+              "environment": "prod",
+              "owner-team": "payments"
+            },
+            "codeOrigin": {
+              "repository": "github.com/acme-demo/payments-api",
+              "path": "Dockerfile"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "relatedFindings": [
+            "vf-0001",
+            "vf-0004"
+          ],
+          "_demoNote": "exact duplicate delivery"
+        },
+        {
+          "id": "wiz-iss-0112",
+          "sourceRule": {
+            "id": "wc-sast-js-022",
+            "name": "Path traversal: user input flows into filesystem path"
+          },
+          "severity": "HIGH",
+          "type": "CODE",
+          "status": "OPEN",
+          "createdAt": "2026-10-22T14:02:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "src/receipts.js resolveReceiptPath() joins req.query.file onto the receipts directory without normalization. Input like ../../etc/passwd escapes the base directory.",
+          "remediation": "Normalize with path.resolve and reject paths outside RECEIPTS_DIR; add a regression test.",
+          "entitySnapshot": {
+            "id": "repo-payments-api",
+            "type": "REPOSITORY",
+            "name": "acme-demo/payments-api",
+            "provider": "GitHub",
+            "branch": "main",
+            "deploysTo": "eks-prod",
+            "tags": {
+              "owner-team": "payments",
+              "environment": "prod"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "detectionSource": "WIZ_CODE",
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/payments-api",
+            "path": "src/receipts.js",
+            "line": 14,
+            "function": "resolveReceiptPath"
+          }
+        },
+        {
+          "id": "wiz-iss-0113",
+          "sourceRule": {
+            "id": "wc-sast-js-041",
+            "name": "Template injection: user input passed to lodash template"
+          },
+          "severity": "HIGH",
+          "type": "CODE",
+          "status": "OPEN",
+          "createdAt": "2026-10-22T14:02:00Z",
+          "updatedAt": "2026-11-03T06:00:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "src/notify.js renders a lodash template whose source string includes user controlled text, the reachable path for CVE-2021-23337.",
+          "remediation": "Do not compile templates from user input; pass user input as data only.",
+          "entitySnapshot": {
+            "id": "repo-payments-api",
+            "type": "REPOSITORY",
+            "name": "acme-demo/payments-api",
+            "provider": "GitHub",
+            "branch": "main",
+            "deploysTo": "eks-prod",
+            "tags": {
+              "owner-team": "payments",
+              "environment": "prod"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "detectionSource": "WIZ_CODE",
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/payments-api",
+            "path": "src/notify.js",
+            "line": 9,
+            "function": "renderReceiptEmail"
+          }
+        },
+        {
+          "id": "wiz-iss-0114",
+          "sourceRule": {
+            "id": "wc-sast-js-089",
+            "name": "SQL injection: user input concatenated into SQL query"
+          },
+          "severity": "HIGH",
+          "type": "CODE",
+          "status": "OPEN",
+          "createdAt": "2026-11-05T09:10:00Z",
+          "updatedAt": "2026-11-05T09:10:00Z",
+          "projects": [
+            {
+              "id": "proj-payments",
+              "name": "Payments Platform (demo)"
+            }
+          ],
+          "description": "src/refunds.js findRefundsByOrder() concatenates req.query.orderId into a quoted string literal in the WHERE clause. Input like x' OR '1'='1 returns every customer's refunds.",
+          "remediation": "Bind the order id with a ? placeholder; add a regression test.",
+          "entitySnapshot": {
+            "id": "repo-payments-api",
+            "type": "REPOSITORY",
+            "name": "acme-demo/payments-api",
+            "provider": "GitHub",
+            "branch": "main",
+            "deploysTo": "eks-prod",
+            "tags": {
+              "owner-team": "payments",
+              "environment": "prod"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "detectionSource": "WIZ_CODE",
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/payments-api",
+            "path": "src/refunds.js",
+            "line": 17,
+            "function": "findRefundsByOrder"
+          }
+        },
+        {
+          "id": "wiz-iss-0115",
+          "sourceRule": {
+            "id": "wc-sast-js-089",
+            "name": "SQL injection: user input concatenated into SQL query"
+          },
+          "severity": "HIGH",
+          "type": "CODE",
+          "status": "OPEN",
+          "createdAt": "2026-11-05T09:10:00Z",
+          "updatedAt": "2026-11-05T09:10:00Z",
+          "projects": [
+            {
+              "id": "proj-orders",
+              "name": "Orders Platform (demo)"
+            }
+          ],
+          "description": "src/orders.js listOrders() interpolates req.query.sort and req.query.dir into ORDER BY. The customer id is bound, but an ORDER BY expression can read api_keys through the result order.",
+          "remediation": "Map sort and direction through an allowlist (placeholders cannot bind identifiers); add a regression test.",
+          "entitySnapshot": {
+            "id": "repo-orders-service",
+            "type": "REPOSITORY",
+            "name": "acme-demo/orders-service",
+            "provider": "GitHub",
+            "branch": "main",
+            "deploysTo": "eks-prod",
+            "tags": {
+              "owner-team": "orders",
+              "environment": "prod"
+            }
+          },
+          "notes": [],
+          "serviceTickets": [],
+          "detectionSource": "WIZ_CODE",
+          "codeOrigin": {
+            "repository": "github.com/acme-demo/orders-service",
+            "path": "src/orders.js",
+            "line": 9,
+            "function": "listOrders"
+          }
+        }
+      ]
+    }
+  },
+  "_role": "OPTIONAL ENRICHMENT SOURCE. Stands in for what the Wiz API or a Wiz MCP server returns when an agent looks up a Wiz Issue ID from a Jira ticket (exploit, KEV, exposure, tags, current status). The primary demo input is data/jira_wiz_native_tickets.csv."
+}
