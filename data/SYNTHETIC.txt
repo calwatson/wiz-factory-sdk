@@ -1,0 +1,1 @@
+SYNTHETIC DEMO DATA. Copied from the Wiz security factory kit. No real customer findings, accounts, or credentials.
