@@ -1,3 +1,4 @@
+import { defaultJiraStatuses, type JiraStatuses } from "../config.js";
 import { assertNever } from "../never.js";
 
 export const LANES = [
@@ -24,24 +25,24 @@ export function isLane(value: string): value is Lane {
 }
 
 /** Intake gate: lane to Jira status. Merge-time /gate stays on GitHub after the PR is open. */
-export function disposition(lane: Lane): Disposition {
+export function disposition(lane: Lane, statuses: JiraStatuses = defaultJiraStatuses()): Disposition {
   switch (lane) {
     case "AUTO_MERGE_ELIGIBLE":
-      return { status: "Ready for Agent", label: "cursor-agent-autopilot", resolution: "" };
+      return { status: statuses.agentReady, label: "cursor-agent-autopilot", resolution: "" };
     case "AGENT_PR_HUMAN_REVIEW":
-      return { status: "Ready for Agent", label: "cursor-agent", resolution: "" };
+      return { status: statuses.agentReady, label: "cursor-agent", resolution: "" };
     case "HUMAN_ONLY":
-      return { status: "Human Needed", label: "human-review", resolution: "" };
+      return { status: statuses.human, label: "human-review", resolution: "" };
     case "FALSE_POSITIVE_CANDIDATE":
-      return { status: "False Positive", label: "false-positive-suspected", resolution: "" };
+      return { status: statuses.falsePositive, label: "false-positive-suspected", resolution: "" };
     case "STALE_CLOSE":
-      return { status: "Done", label: "stale", resolution: "Done" };
+      return { status: statuses.done, label: "stale", resolution: "Done" };
     case "PARENT_TRACKING":
-      return { status: "Human Needed", label: "parent", resolution: "" };
+      return { status: statuses.human, label: "parent", resolution: "" };
     case "DUPLICATE":
-      return { status: "Done", label: "duplicate", resolution: "Duplicate" };
+      return { status: statuses.done, label: "duplicate", resolution: "Duplicate" };
     case "PR_OPEN":
-      return { status: "In Review", label: "cursor-agent", resolution: "" };
+      return { status: statuses.inReview, label: "cursor-agent", resolution: "" };
     default:
       return assertNever(lane, "lane");
   }

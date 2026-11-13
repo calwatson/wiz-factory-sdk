@@ -17,7 +17,7 @@ export class Orchestrator {
     config: FactoryConfig,
     now: () => Date = () => new Date(),
   ) {
-    this.intakeService = new IntakeService(jira, enrichment, now, config.parentIssueType);
+    this.intakeService = new IntakeService(jira, enrichment, now, config.parentIssueType, config.statuses);
     this.remediateService = new RemediateService(jira, launcher, config);
   }
 

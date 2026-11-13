@@ -31,7 +31,7 @@ export class RemediateService {
   constructor(
     private readonly jira: JiraClient,
     private readonly launcher: CloudLauncher,
-    private readonly config: Pick<FactoryConfig, "cursorApiKey" | "modelId" | "githubOwner" | "startingRef" | "pollIntervalMs" | "pollMaxMs" | "skipReviewerRequest">,
+    private readonly config: Pick<FactoryConfig, "cursorApiKey" | "modelId" | "githubOwner" | "startingRef" | "pollIntervalMs" | "pollMaxMs" | "skipReviewerRequest" | "statuses">,
   ) {}
 
   async run(issueKey: string, dryRun: boolean): Promise<RemediateResult> {
@@ -101,11 +101,7 @@ export class RemediateService {
     if (dryRun) {
       return { issueKey, dryRun, githubRepo: routed.route.githubRepo, branch, autoMerge, prompt, members: members.map((member) => member.key) };
     }
-    for (const member of members) {
-      if (member.status === "Ready for Agent" || member.status === "To Do") {
-        await this.jira.transition(member.key, "In Progress");
-      }
-    }
+    await this.beginWork(members);
     const lockKey = `${routed.route.githubRepo}:${issue.fields.correlationGroup || issue.key}`;
     const launched = await this.launchOnce(lockKey, request);
     if (launched.status !== "finished" || !launched.prUrl) {
@@ -136,6 +132,15 @@ export class RemediateService {
       prUrl: launched.prUrl,
       members: members.map((member) => member.key),
     };
+  }
+
+  private async beginWork(members: Issue[]): Promise<void> {
+    const { working, agentReady, trigger } = this.config.statuses;
+    const starts = new Set([agentReady, "To Do", trigger]);
+    for (const member of members) {
+      if (member.status === working || !starts.has(member.status)) continue;
+      await this.jira.transition(member.key, working);
+    }
   }
 
   private async members(issue: Issue, wizRepo: string): Promise<Issue[]> {
@@ -171,8 +176,9 @@ export class RemediateService {
       const fresh = await this.jira.getIssue(member.key);
       if (!failed && prUrl) {
         await this.jira.updateIssue(fresh.key, { fields: { ...fresh.fields, prUrl, agentLane: "PR_OPEN" } });
-        if (fresh.status !== "In Review" && fresh.status !== "Pending Verification" && fresh.status !== "Done") {
-          await this.jira.transition(fresh.key, "In Review");
+        const { inReview, done } = this.config.statuses;
+        if (fresh.status !== inReview && fresh.status !== "Pending Verification" && fresh.status !== done) {
+          await this.jira.transition(fresh.key, inReview);
         }
       }
       const parsed = safeParse(fresh.description);

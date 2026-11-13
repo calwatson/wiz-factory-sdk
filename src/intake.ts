@@ -1,3 +1,4 @@
+import { defaultJiraStatuses, type JiraStatuses } from "./config.js";
 import { dueDateFrom, addLabel } from "./dates.js";
 import { tagsOf, type EnrichmentIndex, type RawNode } from "./factory/enrich.js";
 import { disposition } from "./factory/gate.js";
@@ -12,7 +13,7 @@ import type { Issue, JiraClient } from "./jira/types.js";
 export interface IntakeResult {
   issueKey: string;
   dryRun: boolean;
-  skipped?: "parent" | "already-remediating";
+  skipped?: "parent" | "already-remediating" | "already-triaged";
   lane?: string;
   status?: string;
   dedupKey?: string;
@@ -51,7 +52,7 @@ interface Plan {
   siblingKeys: string[];
   parentNeeded: boolean;
   enrichmentUsed: boolean;
-  skipped?: "parent" | "already-remediating";
+  skipped?: "parent" | "already-remediating" | "already-triaged";
 }
 
 export class IntakeService {
@@ -60,12 +61,20 @@ export class IntakeService {
     private readonly enrichment: EnrichmentIndex,
     private readonly now: () => Date,
     private readonly parentIssueType: string,
+    private readonly statuses: JiraStatuses = defaultJiraStatuses(),
   ) {}
 
   async run(issueKey: string, dryRun: boolean): Promise<IntakeResult> {
     const plan = await this.plan(issueKey);
     if (plan.skipped) {
-      return { issueKey, dryRun, skipped: plan.skipped, enrichment: "n/a" };
+      return {
+        issueKey,
+        dryRun,
+        skipped: plan.skipped,
+        lane: plan.issue.fields.agentLane || undefined,
+        status: plan.issue.status,
+        enrichment: "n/a",
+      };
     }
     if (dryRun) return this.toResult(plan, dryRun, plan.issue.parentKey, false);
     await this.writeFields(plan);
@@ -93,6 +102,9 @@ export class IntakeService {
     }
     if (issue.fields.agentLane === "PR_OPEN" || issue.fields.prUrl) {
       return { ...emptyPlan(issue, false), skipped: "already-remediating" };
+    }
+    if (alreadyTriaged(issue)) {
+      return { ...emptyPlan(issue, false), skipped: "already-triaged" };
     }
     const parsed = parseDescription(issue.description);
     const raw = this.enrichment.get(parsed.wizId);
@@ -151,7 +163,7 @@ export class IntakeService {
   }
 
   private async writeFields(plan: Plan): Promise<void> {
-    const gate = disposition(plan.final.lane);
+    const gate = disposition(plan.final.lane, this.statuses);
     await this.jira.updateIssue(plan.issue.key, {
       labels: addLabel(plan.issue.labels, gate.label),
       dueDate: plan.issue.dueDate || dueDateFrom(this.now(), plan.final.slaDays),
@@ -165,19 +177,19 @@ export class IntakeService {
         agentLane: plan.final.lane,
       },
     });
-    if (shouldTransition(plan.issue.status, gate.status)) {
+    if (shouldTransition(plan.issue.status, gate.status, this.statuses)) {
       await this.jira.transition(plan.issue.key, gate.status, gate.resolution || undefined);
     }
   }
 
   private async writeStatusAndComment(plan: Plan, parentKey: string): Promise<void> {
     const folded = await this.foldedLines(plan.issue.key);
-    await upsertComment(this.jira, plan.issue.key, "[cursor:intake]", intakeBody(plan, parentKey, folded));
+    await upsertComment(this.jira, plan.issue.key, "[cursor:intake]", intakeBody(plan, parentKey, folded, disposition(plan.final.lane, this.statuses).status));
   }
 
   private async markDuplicate(duplicateKey: string, canonicalKey: string, reason: string, parsed: ParsedTicket | undefined): Promise<void> {
     const duplicate = await this.jira.getIssue(duplicateKey);
-    const gate = disposition("DUPLICATE");
+    const gate = disposition("DUPLICATE", this.statuses);
     await this.jira.updateIssue(duplicateKey, {
       labels: addLabel(duplicate.labels, gate.label),
       fields: {
@@ -189,7 +201,7 @@ export class IntakeService {
         riskScore: duplicate.fields.riskScore,
       },
     });
-    if (duplicate.status !== "Done") await this.jira.transition(duplicateKey, "Done", "Duplicate");
+    if (duplicate.status !== this.statuses.done) await this.jira.transition(duplicateKey, this.statuses.done, "Duplicate");
     const already = duplicate.links.some((link) => link.typeName === "Duplicate" && link.thisIs === "outward" && link.otherKey === canonicalKey);
     if (!already) await this.jira.link({ typeName: "Duplicate", outwardKey: duplicateKey, inwardKey: canonicalKey });
     await upsertComment(this.jira, duplicateKey, "[cursor:duplicate]", `[cursor:duplicate] SYNTHETIC DEMO\n${reason}`);
@@ -219,11 +231,11 @@ export class IntakeService {
     parents.sort((a, b) => (a.created < b.created ? -1 : a.created > b.created ? 1 : 0));
     let created = false;
     let parent: Issue;
-    const open = parents.find((item) => item.status !== "Done");
+    const open = parents.find((item) => item.status !== this.statuses.done);
     if (open) parent = open;
     else if (parents[0]) {
       parent = parents[0];
-      await this.jira.transition(parent.key, "Human Needed");
+      await this.jira.transition(parent.key, this.statuses.human);
     } else {
       const priority = siblings.reduce((current, item) => higherPriority(current, item.issue.priority), "Low");
       const risk = siblings.reduce((current, item) => Math.max(current, item.issue.fields.riskScore ?? 0), 0);
@@ -237,7 +249,7 @@ export class IntakeService {
         dueDate: due,
         fields: { crossRepoKey: plan.final.crossRepoKey, agentLane: "PARENT_TRACKING", riskScore: risk },
       });
-      await this.jira.transition(parent.key, "Human Needed");
+      await this.jira.transition(parent.key, this.statuses.human);
       created = true;
       parents = [parent, ...parents];
     }
@@ -247,7 +259,7 @@ export class IntakeService {
       for (const child of children) {
         if (child.parentKey === extra.key) await this.jira.setParent(child.key, parent.key);
       }
-      if (extra.status !== "Done") await this.jira.transition(extra.key, "Done", "Duplicate");
+      if (extra.status !== this.statuses.done) await this.jira.transition(extra.key, this.statuses.done, "Duplicate");
       await upsertComment(this.jira, extra.key, "[cursor:duplicate]", `[cursor:duplicate] SYNTHETIC DEMO\nDuplicate parent of ${parent.key}; children were moved.`);
     }
     for (const sibling of siblings) {
@@ -261,7 +273,7 @@ export class IntakeService {
       repo: item.repo,
       lane: item.issue.fields.agentLane,
       correlation: item.issue.fields.correlationGroup,
-      status: item.issue.key === plan.issue.key ? plan.final.jiraStatus : item.issue.status,
+      status: item.issue.key === plan.issue.key ? disposition(plan.final.lane, this.statuses).status : item.issue.status,
       prUrl: item.issue.fields.prUrl,
       fixDifference: fixDifference(item.wizId, item.laneReason),
     }));
@@ -275,7 +287,7 @@ export class IntakeService {
       fields: { crossRepoKey: plan.final.crossRepoKey, agentLane: "PARENT_TRACKING", riskScore: risk },
     });
     let body = formatParentComment(lines);
-    if (parents.some((item) => item.key === parent.key && item.status === "Done")) {
+    if (parents.some((item) => item.key === parent.key && item.status === this.statuses.done)) {
       body += "\nReopened because a child is open again.";
     }
     await upsertComment(this.jira, parent.key, "[cursor:parent-summary]", body);
@@ -366,7 +378,7 @@ export class IntakeService {
       issueKey: plan.issue.key,
       dryRun,
       lane: plan.final.lane,
-      status: plan.final.jiraStatus,
+      status: disposition(plan.final.lane, this.statuses).status,
       dedupKey: plan.final.dedupKey,
       duplicateOf: plan.duplicateOf || undefined,
       dupReason: plan.dupReason || undefined,
@@ -386,11 +398,17 @@ function eligible(candidate: Candidate): boolean {
   return !candidate.resolvedFinding && candidate.lane !== "DUPLICATE" && candidate.lane !== "STALE_CLOSE" && candidate.resolution !== "Duplicate";
 }
 
-function shouldTransition(current: string, target: string): boolean {
+/** To Do and the trigger status are entry points. In Review, Done, and later verification states are not. */
+export function shouldTransition(current: string, target: string, statuses: JiraStatuses = defaultJiraStatuses()): boolean {
   if (current === target) return false;
-  const later = new Set(["In Progress", "In Review", "Pending Verification", "Done", "Reopened"]);
-  if (target !== "Done" && later.has(current)) return false;
+  const terminal = new Set([statuses.inReview, statuses.done, "Pending Verification", "Reopened"]);
+  if (current === "To Do" || current === statuses.trigger) return !terminal.has(current) || target === statuses.done;
+  if (terminal.has(current) && target !== statuses.done) return false;
   return true;
+}
+
+function alreadyTriaged(issue: Issue): boolean {
+  return issue.fields.agentLane.length > 0 && issue.comments.some((comment) => comment.body.includes("[cursor:intake]"));
 }
 
 function isTrackingParent(issue: Issue): boolean {
@@ -434,12 +452,12 @@ function assessPlaceholder(): Assessment {
   };
 }
 
-function intakeBody(plan: Plan, parentKey: string, folded: string[]): string {
+function intakeBody(plan: Plan, parentKey: string, folded: string[], status: string): string {
   return [
     "[cursor:intake] SYNTHETIC DEMO",
     `Risk score: ${plan.final.riskScore} (${plan.final.riskFactors.join("; ")})`,
     `Lane: ${plan.final.lane}`,
-    `Status: ${plan.final.jiraStatus}`,
+    `Status: ${status}`,
     `Reason: ${plan.final.laneReason}`,
     `Enrichment: ${plan.enrichmentUsed ? "used" : "ticket fields only"}`,
     `Dedup Key: ${plan.final.dedupKey}`,

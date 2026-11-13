@@ -17,7 +17,31 @@ export interface FactoryConfig {
   skipReviewerRequest: boolean;
   dataDir: string;
   logPayloads: boolean;
+  statuses: JiraStatuses;
   fieldOverrides: Partial<Record<FieldOverrideKey, string>>;
+}
+
+/** Jira workflow names. Defaults match the demo project; rename them to the site's statuses. */
+export interface JiraStatuses {
+  trigger: string;
+  agentReady: string;
+  human: string;
+  falsePositive: string;
+  working: string;
+  inReview: string;
+  done: string;
+}
+
+export function defaultJiraStatuses(): JiraStatuses {
+  return {
+    trigger: "In Progress",
+    agentReady: "Ready for Agent",
+    human: "Human Needed",
+    falsePositive: "False Positive",
+    working: "In Progress",
+    inReview: "In Review",
+    done: "Done",
+  };
 }
 
 export type FieldOverrideKey =
@@ -100,8 +124,27 @@ export function loadConfig(env: ConfigEnv = process.env, opts?: { requireCursor?
     skipReviewerRequest: env.CURSOR_SKIP_REVIEWER_REQUEST !== "false",
     dataDir: env.FACTORY_DATA_DIR?.trim() || "data",
     logPayloads: payloadsEnabled(env),
+    statuses: loadStatuses(env),
     fieldOverrides,
   };
+}
+
+function loadStatuses(env: ConfigEnv): JiraStatuses {
+  const defaults = defaultJiraStatuses();
+  return {
+    trigger: statusEnv(env, "JIRA_STATUS_TRIGGER", defaults.trigger),
+    agentReady: statusEnv(env, "JIRA_STATUS_AGENT_READY", defaults.agentReady),
+    human: statusEnv(env, "JIRA_STATUS_HUMAN", defaults.human),
+    falsePositive: statusEnv(env, "JIRA_STATUS_FALSE_POSITIVE", defaults.falsePositive),
+    working: statusEnv(env, "JIRA_STATUS_WORKING", defaults.working),
+    inReview: statusEnv(env, "JIRA_STATUS_IN_REVIEW", defaults.inReview),
+    done: statusEnv(env, "JIRA_STATUS_DONE", defaults.done),
+  };
+}
+
+function statusEnv(env: ConfigEnv, name: string, fallback: string): string {
+  const value = env[name]?.trim();
+  return value || fallback;
 }
 
 /** Load KEY=VALUE pairs from a local env file without overriding variables already set. */
