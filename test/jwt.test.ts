@@ -43,7 +43,7 @@ test("jwt scenario creates one parent, duplicates T43, and opens two repo PRs", 
   assert.ok(report.parentKey);
   assert.equal(t08.parentKey, report.parentKey);
   assert.equal(t42.parentKey, report.parentKey);
-  assert.equal(t43.parentKey, "");
+  assert.equal(t43.parentKey, report.parentKey);
   const parent = await jira.getIssue(report.parentKey);
   assert.equal(parent.issueType, "Epic");
   assert.equal(parent.summary, "[Parent] CVE-2022-23540 in jsonwebtoken across 2 repos");
@@ -84,7 +84,7 @@ test("jwt scenario creates one parent, duplicates T43, and opens two repo PRs", 
   assert.match(summary[0]?.body ?? "", /orders-service\/pull\//);
   assert.match(summary[0]?.body ?? "", /partnerWebhook/);
   assert.match(summary[0]?.body ?? "", /src\/auth\.js/);
-  assert.equal(parentAfter.comments.length, 1);
+  assert.equal(parentAfter.comments.filter((comment) => comment.body.includes("[cursor:duplicate-group]")).length, 1);
   assert.equal(launcher.requests.length, 2);
 });
 

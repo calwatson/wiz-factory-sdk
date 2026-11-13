@@ -1,4 +1,5 @@
 import { defaultJiraStatuses, type JiraStatuses } from "./config.js";
+import { assertNever } from "./never.js";
 import { dueDateFrom, addLabel } from "./dates.js";
 import { tagsOf, type EnrichmentIndex, type RawNode } from "./factory/enrich.js";
 import { disposition } from "./factory/gate.js";
@@ -82,6 +83,7 @@ export class IntakeService {
       await this.markDuplicate(plan.issue.key, plan.duplicateOf, plan.final.laneReason, plan.parsed);
       return this.toResult(plan, dryRun, "", false);
     }
+    const parent = plan.parentNeeded ? await this.syncParent(plan) : { key: "", created: false };
     for (const other of plan.demote) {
       await this.markDuplicate(
         other.key,
@@ -90,7 +92,6 @@ export class IntakeService {
         undefined,
       );
     }
-    const parent = plan.parentNeeded ? await this.syncParent(plan) : { key: "", created: false };
     await this.writeStatusAndComment(plan, parent.key);
     return this.toResult(plan, dryRun, parent.key, parent.created);
   }
@@ -206,6 +207,102 @@ export class IntakeService {
     if (!already) await this.jira.link({ typeName: "Duplicate", outwardKey: duplicateKey, inwardKey: canonicalKey });
     await upsertComment(this.jira, duplicateKey, "[cursor:duplicate]", `[cursor:duplicate] SYNTHETIC DEMO\n${reason}`);
     if (parsed) await this.foldIntoCanonical(canonicalKey, duplicateKey, parsed);
+    await this.syncDuplicateGroup(canonicalKey);
+  }
+
+  /** One Epic per dedup key for the canonical ticket and its duplicates. A cross-repo parent wins, because a ticket can have only one parent. */
+  private async syncDuplicateGroup(canonicalKey: string): Promise<void> {
+    const canonical = await this.jira.getIssue(canonicalKey);
+    const dedupKey = canonical.fields.dedupKey;
+    if (!dedupKey) return;
+    const members = await this.duplicateMembers(canonical);
+    const duplicates = members.filter((member) => member.key !== canonical.key);
+    if (duplicates.length === 0) return;
+    const crossRepo = await this.crossRepoParentOf(canonical);
+    const epic = crossRepo ?? (await this.findOrCreateDuplicateEpic(canonical, members));
+    for (const member of members) {
+      if (member.parentKey === epic.key) continue;
+      await this.jira.setParent(member.key, epic.key);
+    }
+    const fresh = await this.duplicateMembers(await this.jira.getIssue(canonicalKey));
+    await this.refreshDuplicateGroup(epic, fresh, crossRepo !== undefined);
+  }
+
+  private async duplicateMembers(canonical: Issue): Promise<Issue[]> {
+    const found = canonical.fields.dedupKey
+      ? await this.jira.search({ kind: "dedup-key", dedupKey: canonical.fields.dedupKey, unresolved: false })
+      : [];
+    const members = new Map<string, Issue>([[canonical.key, canonical]]);
+    for (const issue of found) {
+      if (isDuplicateGroupEpic(issue) || isTrackingParent(issue)) continue;
+      members.set(issue.key, issue);
+    }
+    return [...members.values()];
+  }
+
+  private async crossRepoParentOf(issue: Issue): Promise<Issue | undefined> {
+    if (!issue.parentKey) return undefined;
+    const parent = await this.jira.getIssue(issue.parentKey);
+    if (parent.labels.includes("parent") && parent.labels.includes("cross-repo") && !parent.labels.includes("duplicate-group")) return parent;
+    return undefined;
+  }
+
+  private async findOrCreateDuplicateEpic(canonical: Issue, members: Issue[]): Promise<Issue> {
+    const existing = await this.jira.search({ kind: "duplicate-group", dedupKey: canonical.fields.dedupKey });
+    const open = existing
+      .filter((issue) => issue.status !== this.statuses.done)
+      .sort((a, b) => (a.created < b.created ? -1 : a.created > b.created ? 1 : 0));
+    const epic = open[0] ?? (await this.createDuplicateEpic(canonical, members));
+    for (const extra of open.filter((issue) => issue.key !== epic.key)) {
+      await this.jira.transition(extra.key, this.statuses.done, "Duplicate");
+      await upsertComment(this.jira, extra.key, "[cursor:duplicate]", `[cursor:duplicate] SYNTHETIC DEMO\nDuplicate group epic of ${epic.key}; members were moved.`);
+    }
+    return this.jira.getIssue(epic.key);
+  }
+
+  private async createDuplicateEpic(canonical: Issue, members: Issue[]): Promise<Issue> {
+    let parsed: ParsedTicket | undefined;
+    try {
+      parsed = parseDescription(canonical.description);
+    } catch {
+      parsed = undefined;
+    }
+    const created = await this.jira.createIssue({
+      summary: duplicateGroupSummary(parsed, canonical.summary, members.length),
+      description: ["[SYNTHETIC DEMO DATA]", `Dedup Key: ${canonical.fields.dedupKey}`, "Duplicate group. Tracking only: remediation runs on the canonical ticket."].join("\n"),
+      issueType: this.parentIssueType,
+      priority: members.reduce((priority, member) => higherPriority(priority, member.priority), "Low"),
+      labels: ["parent", "duplicate-group"],
+      dueDate: earliestDue(members),
+      fields: {
+        dedupKey: canonical.fields.dedupKey,
+        agentLane: "PARENT_TRACKING",
+        riskScore: maxRisk(members),
+      },
+    });
+    await this.jira.transition(created.key, this.statuses.human);
+    return this.jira.getIssue(created.key);
+  }
+
+  private async refreshDuplicateGroup(epic: Issue, members: Issue[], crossRepo: boolean): Promise<void> {
+    const canonical = members.find((member) => member.fields.agentLane !== "DUPLICATE") ?? members[0];
+    if (!canonical) return;
+    if (!crossRepo) {
+      let parsed: ParsedTicket | undefined;
+      try {
+        parsed = parseDescription(canonical.description);
+      } catch {
+        parsed = undefined;
+      }
+      await this.jira.updateIssue(epic.key, {
+        summary: duplicateGroupSummary(parsed, canonical.summary, members.length),
+        priority: members.reduce((priority, member) => higherPriority(priority, member.priority), "Low"),
+        labels: ["parent", "duplicate-group"],
+        ...(earliestDue(members) ? { dueDate: earliestDue(members) } : {}),
+        fields: { dedupKey: canonical.fields.dedupKey, agentLane: "PARENT_TRACKING", riskScore: maxRisk(members) },
+      });
+    }
+    await upsertComment(this.jira, epic.key, "[cursor:duplicate-group]", duplicateGroupComment(members));
   }
 
   private async foldIntoCanonical(canonicalKey: string, duplicateKey: string, parsed: ParsedTicket): Promise<void> {
@@ -266,6 +363,7 @@ export class IntakeService {
       if (sibling.issue.parentKey === parent.key) continue;
       await this.jira.setParent(sibling.issue.key, parent.key);
     }
+    for (const sibling of siblings) await this.syncDuplicateGroup(sibling.issue.key);
     const refreshed = await this.loadSiblings(plan);
     const lines: ParentChildLine[] = refreshed.map((item) => ({
       key: item.issue.key,
@@ -407,13 +505,70 @@ export function shouldTransition(current: string, target: string, statuses: Jira
   return true;
 }
 
+function duplicateGroupSummary(parsed: ParsedTicket | undefined, summary: string, count: number): string {
+  const title = parsed ? findingTitle(parsed) : summary;
+  return `Duplicate group: ${title} (${count} tickets)`;
+}
+
+function findingTitle(parsed: ParsedTicket): string {
+  switch (parsed.findingType) {
+    case "Vulnerability":
+      return `${parsed.cve} in ${parsed.packageName}`;
+    case "Code":
+      return parsed.rule || parsed.ruleId;
+    case "Secret":
+      return parsed.secretType || parsed.rule;
+    case "Cloud Configuration":
+    case "Toxic Combination":
+      return parsed.rule || parsed.wizId;
+    default:
+      return assertNever(parsed.findingType, "finding type");
+  }
+}
+
+function duplicateGroupComment(members: Issue[]): string {
+  const ordered = [...members].sort((left, right) => {
+    const leftDup = left.fields.agentLane === "DUPLICATE" ? 1 : 0;
+    const rightDup = right.fields.agentLane === "DUPLICATE" ? 1 : 0;
+    if (leftDup !== rightDup) return leftDup - rightDup;
+    return left.key < right.key ? -1 : left.key > right.key ? 1 : 0;
+  });
+  const lines = ordered.map((member) => {
+    const parsed = safeParse(member.description);
+    const role = member.fields.agentLane === "DUPLICATE" ? "duplicate" : "canonical";
+    return `- ${member.key} (${parsed?.wizId ?? ""}) ${parsed?.resourceName || member.summary}: ${member.status} ${role}`;
+  });
+  return `[cursor:duplicate-group] ${ordered.length} tickets. Remediation runs on the canonical ticket only.\n${lines.join("\n")}`;
+}
+
+function earliestDue(members: Issue[]): string {
+  return members.map((member) => member.dueDate).filter((due) => due.length > 0).sort()[0] ?? "";
+}
+
+function maxRisk(members: Issue[]): number {
+  return members.reduce((risk, member) => Math.max(risk, member.fields.riskScore ?? 0), 0);
+}
+
+function safeParse(description: string): ParsedTicket | undefined {
+  try {
+    return parseDescription(description);
+  } catch {
+    return undefined;
+  }
+}
+
 function alreadyTriaged(issue: Issue): boolean {
   return issue.fields.agentLane.length > 0 && issue.comments.some((comment) => comment.body.includes("[cursor:intake]"));
 }
 
 function isTrackingParent(issue: Issue): boolean {
+  if (issue.labels.includes("duplicate-group")) return true;
   if (issue.issueType.toLowerCase() === "epic") return true;
   return issue.labels.includes("parent") && issue.labels.includes("cross-repo");
+}
+
+function isDuplicateGroupEpic(issue: Issue): boolean {
+  return issue.labels.includes("duplicate-group");
 }
 
 function emptyPlan(issue: Issue, parent: boolean): Plan {
