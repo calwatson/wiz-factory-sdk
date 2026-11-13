@@ -133,6 +133,20 @@ docker run --env-file .env -p 8787:8787 wiz-factory-sdk
 
 Any host that can run that container and expose port 8787 is enough. Put the same env vars in the host's secret store rather than in the image.
 
+## Resetting the demo
+
+`reset` clears the sandbox board. It is a dry run unless you pass `--yes`. It uses the same `.env` loading as the server (`JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN`, `JIRA_PROJECT_KEY`, default `JWF`) and does not need `CURSOR_API_KEY` or `WEBHOOK_SECRET`. Issue numbers do not restart after a delete.
+
+```bash
+npm run reset:jira                         # list every issue in JWF
+npm run reset:jira -- --label wiz          # only issues labeled wiz
+npm run reset:jira -- --yes                # delete them
+npm run reset:jira -- --yes --reload       # delete, then recreate data/jira_wiz_native_tickets.csv
+npm run reset:jira -- --yes --reload --github
+```
+
+`--project` overrides the project key. Search uses `/rest/api/3/search/jql` with `nextPageToken`, and falls back to `/rest/api/3/search`. Deletes call `DELETE /rest/api/3/issue/{key}?deleteSubtasks=true`, children before parent Epics. A 403 prints a hint that the Jira user needs the Delete Issues permission. `--reload` is skipped if any delete failed, so surviving tickets are not duplicated. `--github` closes open `security/*` pull requests in `$GITHUB_OWNER/payments-api`, `platform-infra`, and `orders-service` (default owner `calwatson`) and deletes those branches. Without `gh` installed, it prints the commands to run instead. Without `--yes`, `--github` and `--reload` only print what they would do.
+
 ## Tests
 
 `npm test` uses Node's test runner. Jira is an in-memory client or a mocked `fetch`. The Cursor SDK is not called; tests assert the `Agent.create` options and the poll loop. `npm run typecheck` checks `src/` and `test/` against `@cursor/sdk` 1.3.1. GitHub Actions runs both on Node 22.

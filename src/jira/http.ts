@@ -48,8 +48,19 @@ export class HttpJira implements JiraClient {
     return rawIssues.map((raw) => this.mapIssue(raw, fields)).filter((issue) => matchesQuery(issue, query));
   }
 
+  async searchByJql(jql: string): Promise<Issue[]> {
+    const rawIssues = await this.searchJql(jql, "summary,labels,issuetype,parent");
+    return rawIssues.map((raw) => this.mapIssue(raw, new Map()));
+  }
+
+  async deleteIssue(key: string): Promise<void> {
+    await this.request("DELETE", `/issue/${encodeURIComponent(key)}?deleteSubtasks=true`);
+  }
+
   async createIssue(input: CreateIssueInput): Promise<Issue> {
-    const fields = await this.ensureFields();
+    const custom = input.fields ?? {};
+    const needsCustom = Object.values(custom).some((value) => value !== undefined && value !== "");
+    const fields = needsCustom ? await this.ensureFields() : undefined;
     const body = {
       fields: {
         project: { key: this.config.jiraProjectKey },
@@ -59,11 +70,12 @@ export class HttpJira implements JiraClient {
         priority: input.priority ? { name: input.priority } : undefined,
         labels: input.labels,
         duedate: input.dueDate || undefined,
-        ...this.serializeFields(input.fields ?? {}, fields),
+        ...(fields ? this.serializeFields(custom, fields) : {}),
       },
     };
     const created = (await this.request("POST", "/issue", body)) as { key?: string };
     if (!created.key) throw new FactoryError("Jira create issue returned no key.", "jira");
+    if (!fields) return bareIssue(created.key, input);
     return this.getIssue(created.key);
   }
 
@@ -283,7 +295,9 @@ export class HttpJira implements JiraClient {
       }
       return issues;
     } catch (error) {
-      if (!(error instanceof FactoryError) || (error.status !== 404 && error.status !== 410)) throw error;
+      const status = error instanceof FactoryError ? error.status : 0;
+      const canFallback = status === 400 || status === 404 || status === 405 || status === 410;
+      if (!canFallback || issues.length > 0 || nextPageToken) throw error;
     }
     let startAt = 0;
     for (;;) {
@@ -372,4 +386,24 @@ function nestedKey(value: unknown): string {
 
 function stringField(value: unknown): string {
   return typeof value === "string" ? value : "";
+}
+
+function bareIssue(key: string, input: CreateIssueInput): Issue {
+  return {
+    key,
+    summary: input.summary,
+    description: input.description,
+    status: "To Do",
+    resolution: "",
+    issueType: input.issueType,
+    priority: input.priority,
+    labels: [...input.labels],
+    created: input.created ?? "",
+    dueDate: input.dueDate ?? "",
+    component: input.component ?? "",
+    parentKey: "",
+    fields: { ...emptyFields(), ...input.fields },
+    comments: [],
+    links: [],
+  };
 }

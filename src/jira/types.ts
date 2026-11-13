@@ -84,6 +84,8 @@ export type JiraQuery =
 export interface JiraClient {
   getIssue(key: string): Promise<Issue>;
   search(query: JiraQuery): Promise<Issue[]>;
+  searchByJql(jql: string): Promise<Issue[]>;
+  deleteIssue(key: string): Promise<void>;
   createIssue(input: CreateIssueInput): Promise<Issue>;
   updateIssue(key: string, patch: IssuePatch): Promise<Issue>;
   transition(key: string, status: string, resolution?: string): Promise<void>;
