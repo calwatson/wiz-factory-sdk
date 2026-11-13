@@ -23,6 +23,8 @@ flowchart LR
   Orch -->|PR URL, lane PR_OPEN, In Review, one comment| Jira
 ```
 
+Duplicates of one canonical ticket are grouped under a parent Epic labeled `parent` and `duplicate-group`, one Epic per Dedup Key. The summary looks like `Duplicate group: CVE-2022-23540 in jsonwebtoken (2 tickets)`. Each duplicate still resolves as Done with resolution Duplicate and keeps its Duplicate link. If the canonical ticket already has a cross-repo parent, the duplicates go under that parent instead, because a Jira issue can have only one parent. A `[cursor:duplicate-group]` comment on the Epic lists the canonical ticket and each duplicate. Rerunning intake reuses the open Epic. `reset` deletes these Epics along with the tickets, including when `--label wiz` would otherwise leave them behind.
+
 Intake is deterministic code: the same dedup, triage, and lane gate as the kit skills (`/wiz-ticket-intake`, `/dedup`, `/wiz-triage`, and the status half of `/gate`). It does not start an agent and it does not open a PR. Enrichment JSON in `data/enrichment/` stands in for a read-only Wiz lookup. A Wiz id with no enrichment row is scored from the ticket text and the comment says `ticket fields only`.
 
 Remediation starts a cloud agent only for `AUTO_MERGE_ELIGIBLE` and `AGENT_PR_HUMAN_REVIEW`. Parents (Epic, label `parent`, or lane `PARENT_TRACKING`) are skipped. Duplicates are skipped. The repo comes from the description, in this order:

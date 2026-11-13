@@ -57,7 +57,7 @@ export function resetJql(project: string, label: string): string {
 
 export function isTrackingParent(issue: Pick<Issue, "issueType" | "labels" | "parentKey">): boolean {
   if (issue.parentKey) return false;
-  return issue.issueType.toLowerCase() === "epic" || issue.labels.includes("parent");
+  return issue.issueType.toLowerCase() === "epic" || issue.labels.includes("parent") || issue.labels.includes("duplicate-group");
 }
 
 /** Children first so a parent delete does not fail on remaining children. */
@@ -101,7 +101,9 @@ export async function resetBoard(options: ResetOptions): Promise<number> {
   const jql = resetJql(options.project, options.label);
   log(`Searching ${jql}`);
   const found = await options.jira.searchByJql(jql);
-  const issues = options.label ? found.filter((issue) => issue.labels.includes(options.label)) : found;
+  const matched = options.label ? found.filter((issue) => issue.labels.includes(options.label)) : found;
+  const groups = await options.jira.searchByJql(resetJql(options.project, "duplicate-group"));
+  const issues = [...new Map([...matched, ...groups].map((issue) => [issue.key, issue])).values()];
   log(`${issues.length} issue(s)`);
   for (const issue of issues) log(`  ${issue.key}${issue.summary ? `  ${issue.summary}` : ""}`);
 

@@ -22,11 +22,19 @@ export function matchesQuery(issue: Issue, query: JiraQuery): boolean {
     case "cross-repo":
       return (
         issue.fields.crossRepoKey === query.crossRepoKey &&
+        !issue.labels.includes("duplicate-group") &&
         (!query.unresolved || issue.resolution === "") &&
         (!query.excludeParentLabel || !issue.labels.includes("parent"))
       );
     case "parent":
-      return issue.labels.includes("cross-repo") && issue.fields.crossRepoKey === query.crossRepoKey;
+      return issue.labels.includes("cross-repo") && !issue.labels.includes("duplicate-group") && issue.fields.crossRepoKey === query.crossRepoKey;
+    case "duplicate-group":
+      return (
+        issue.labels.includes("parent") &&
+        issue.labels.includes("duplicate-group") &&
+        !issue.labels.includes("cross-repo") &&
+        issue.fields.dedupKey === query.dedupKey
+      );
     case "correlation":
       return issue.fields.correlationGroup === query.correlationGroup && (!query.unresolved || issue.resolution === "");
     default:
@@ -48,9 +56,11 @@ export function jqlFor(project: string, query: JiraQuery): string {
     case "dedup-key":
       return `${base} AND "Dedup Key" ~ ${quote(query.dedupKey)}${query.unresolved ? " AND resolution is EMPTY" : ""} ORDER BY created ASC`;
     case "cross-repo":
-      return `${base} AND "Cross-Repo Key" ~ ${quote(query.crossRepoKey)}${query.unresolved ? " AND resolution is EMPTY" : ""}${query.excludeParentLabel ? " AND labels != parent" : ""} ORDER BY created ASC`;
+      return `${base} AND "Cross-Repo Key" ~ ${quote(query.crossRepoKey)} AND labels != duplicate-group${query.unresolved ? " AND resolution is EMPTY" : ""}${query.excludeParentLabel ? " AND labels != parent" : ""} ORDER BY created ASC`;
     case "parent":
-      return `${base} AND labels = cross-repo AND "Cross-Repo Key" ~ ${quote(query.crossRepoKey)} ORDER BY created ASC`;
+      return `${base} AND labels = cross-repo AND labels != duplicate-group AND "Cross-Repo Key" ~ ${quote(query.crossRepoKey)} ORDER BY created ASC`;
+    case "duplicate-group":
+      return `${base} AND labels = parent AND labels = duplicate-group AND labels != cross-repo AND "Dedup Key" ~ ${quote(query.dedupKey)} ORDER BY created ASC`;
     case "correlation":
       return `${base} AND "Correlation Group" ~ ${quote(query.correlationGroup)}${query.unresolved ? " AND resolution is EMPTY" : ""} ORDER BY created ASC`;
     default:

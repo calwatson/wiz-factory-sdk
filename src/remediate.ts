@@ -223,7 +223,7 @@ export class RemediateService {
 }
 
 function isParent(issue: Issue): boolean {
-  return issue.issueType.toLowerCase() === "epic" || issue.labels.includes("parent") || issue.fields.agentLane === "PARENT_TRACKING";
+  return issue.issueType.toLowerCase() === "epic" || issue.labels.includes("parent") || issue.labels.includes("duplicate-group") || issue.fields.agentLane === "PARENT_TRACKING";
 }
 
 function toPromptTicket(issue: Issue): PromptTicket {

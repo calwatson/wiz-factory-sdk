@@ -79,6 +79,7 @@ export type JiraQuery =
   | { kind: "dedup-key"; dedupKey: string; unresolved: boolean }
   | { kind: "cross-repo"; crossRepoKey: string; unresolved: boolean; excludeParentLabel: boolean }
   | { kind: "parent"; crossRepoKey: string }
+  | { kind: "duplicate-group"; dedupKey: string }
   | { kind: "correlation"; correlationGroup: string; unresolved: boolean };
 
 export interface JiraClient {
