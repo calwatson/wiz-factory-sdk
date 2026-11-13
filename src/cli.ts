@@ -6,6 +6,7 @@ import { HttpJira } from "./jira/http.js";
 import { MemoryJira } from "./jira/memory.js";
 import { Orchestrator } from "./orchestrator.js";
 import { runJwtScenario } from "./scenario.js";
+import { configForReset, realGh, resetBoard } from "./reset.js";
 import { createWebhookServer } from "./server.js";
 import { CursorSdkLauncher } from "./sdk/cursor-cloud.js";
 import type { CloudLauncher } from "./sdk/types.js";
@@ -39,6 +40,24 @@ async function main(): Promise<void> {
     console.error("SYNTHETIC scenario jwt: creating any missing JWF tickets, then intake and remediate.");
     const report = await runJwtScenario({ orchestrator, jira, dataDir: config.dataDir, dryRun: false });
     console.log(JSON.stringify(report, null, 2));
+    return;
+  }
+  if (args.command === "reset") {
+    const reset = args.reset;
+    if (!reset) throw new Error("reset flags missing");
+    const config = configForReset(process.env, reset.project);
+    const code = await resetBoard({
+      yes: reset.yes,
+      project: config.jiraProjectKey,
+      label: reset.label,
+      reload: reset.reload,
+      github: reset.github,
+      dataDir: config.dataDir,
+      githubOwner: config.githubOwner,
+      jira: new HttpJira(config),
+      gh: realGh(),
+    });
+    process.exitCode = code;
     return;
   }
   if (args.command === "serve") {

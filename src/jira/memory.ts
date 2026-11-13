@@ -22,6 +22,18 @@ export class MemoryJira implements JiraClient {
     return [...this.issues.values()].filter((issue) => matchesQuery(issue, query)).map((issue) => structuredClone(issue)).sort((a, b) => (a.created < b.created ? -1 : a.created > b.created ? 1 : 0));
   }
 
+  async searchByJql(jql: string): Promise<Issue[]> {
+    const label = /labels = "((?:\\.|[^"\\])*)"/.exec(jql)?.[1]?.replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+    return [...this.issues.values()]
+      .filter((issue) => label === undefined || issue.labels.includes(label))
+      .map((issue) => structuredClone(issue))
+      .sort((a, b) => (a.created < b.created ? -1 : a.created > b.created ? 1 : 0));
+  }
+
+  async deleteIssue(key: string): Promise<void> {
+    if (!this.issues.delete(key)) throw new NotFoundError(key);
+  }
+
   async createIssue(input: CreateIssueInput): Promise<Issue> {
     const key = input.key ?? `${this.projectKey}-${this.nextNumber}`;
     const suffix = Number(key.split("-").at(-1));

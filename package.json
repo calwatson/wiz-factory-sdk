@@ -15,7 +15,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "tsx --test test/*.test.ts",
     "start": "node dist/cli.js serve",
-    "scenario:jwt": "tsx src/cli.ts run-scenario jwt --dry-run"
+    "scenario:jwt": "tsx src/cli.ts run-scenario jwt --dry-run",
+    "reset:jira": "tsx src/cli.ts reset"
   },
   "dependencies": {
     "@cursor/sdk": "1.3.1"
