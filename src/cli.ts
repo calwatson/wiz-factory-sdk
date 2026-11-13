@@ -44,7 +44,11 @@ async function main(): Promise<void> {
   if (args.command === "serve") {
     const config = loadConfig(process.env, { requireCursor: true, requireJira: true, requireWebhook: true });
     const orchestrator = new Orchestrator(new HttpJira(config), loadEnrichment(config.dataDir), new CursorSdkLauncher(), config);
-    const server = createWebhookServer({ orchestrator, webhookSecret: config.webhookSecret });
+    const server = createWebhookServer({
+      orchestrator,
+      webhookSecret: config.webhookSecret,
+      logPayloads: config.logPayloads,
+    });
     server.listen(config.port, () => {
       console.error(`wiz-factory listening on :${config.port} (SYNTHETIC demo)`);
     });
