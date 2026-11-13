@@ -16,6 +16,7 @@ export interface FactoryConfig {
   pollMaxMs: number;
   skipReviewerRequest: boolean;
   dataDir: string;
+  logPayloads: boolean;
   fieldOverrides: Partial<Record<FieldOverrideKey, string>>;
 }
 
@@ -60,6 +61,15 @@ function intEnv(env: ConfigEnv, name: string, fallback: number): number {
   return value;
 }
 
+/** Request logging is on unless LOG_PAYLOADS is false, 0, or no. */
+export function payloadsEnabled(env: ConfigEnv = process.env): boolean {
+  const raw = env.LOG_PAYLOADS?.trim().toLowerCase();
+  if (raw === undefined || raw === "") return true;
+  if (raw === "false" || raw === "0" || raw === "no") return false;
+  if (raw === "true" || raw === "1" || raw === "yes") return true;
+  throw new Error(`LOG_PAYLOADS must be true or false, got ${env.LOG_PAYLOADS}.`);
+}
+
 export function loadConfig(env: ConfigEnv = process.env, opts?: { requireCursor?: boolean; requireJira?: boolean; requireWebhook?: boolean }): FactoryConfig {
   const requireJira = opts?.requireJira ?? true;
   const requireCursor = opts?.requireCursor ?? true;
@@ -89,6 +99,7 @@ export function loadConfig(env: ConfigEnv = process.env, opts?: { requireCursor?
     pollMaxMs: intEnv(env, "AGENT_POLL_MAX_MS", 60 * 60 * 1000),
     skipReviewerRequest: env.CURSOR_SKIP_REVIEWER_REQUEST !== "false",
     dataDir: env.FACTORY_DATA_DIR?.trim() || "data",
+    logPayloads: payloadsEnabled(env),
     fieldOverrides,
   };
 }

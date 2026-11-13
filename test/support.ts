@@ -19,6 +19,7 @@ export function testConfig(): FactoryConfig {
     pollMaxMs: 20,
     skipReviewerRequest: true,
     dataDir: "data",
+    logPayloads: true,
     fieldOverrides: {},
   };
 }

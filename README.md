@@ -77,6 +77,7 @@ npm start
 | `CURSOR_STARTING_REF` | Clone ref. Default `main` |
 | `GITHUB_OWNER` | Default `calwatson` |
 | `PORT` | Default `8787` |
+| `LOG_PAYLOADS` | Log each request to stdout. Default `true`. Set `false` to turn it off. `X-Webhook-Secret` is written as presence and length only |
 
 Custom fields are resolved by name: Dedup Key, Fix Location, Correlation Group, Cross-Repo Key, Risk Score, Agent Lane, PR URL. Set `JIRA_FIELD_*` to a `customfield_` id if the name lookup is not enough. Agent Lane is sent as a select value when Jira says the schema type is `option`. The project needs an Epic issue type, and the Epic workflow needs `Human Needed` and `Done`. Statuses used by the lane gate: `Ready for Agent`, `Human Needed`, `False Positive`, `In Progress`, `In Review`, `Done`.
 
