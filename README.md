@@ -11,8 +11,8 @@ SDK facts, including what was read from `@cursor/sdk@1.3.1` and what is assumed,
 ```mermaid
 flowchart LR
   Wiz[Wiz native Jira integration] -->|Bug, label wiz| Jira[(Jira JWF)]
-  Jira -->|Rule 1 issue created| Intake[POST /intake]
-  Jira -->|Rule 2 In Progress| Rem[POST /remediate]
+  Jira -->|transition to trigger status| Intake[POST /intake]
+  Jira -->|transition to agent-ready status| Rem[POST /remediate]
   Intake --> Orch[This orchestrator]
   Rem --> Orch
   Orch -->|REST: dedup, triage, parent, handoff| Jira
@@ -79,24 +79,29 @@ npm start
 | `PORT` | Default `8787` |
 | `LOG_PAYLOADS` | Log each request to stdout. Default `true`. Set `false` to turn it off. `X-Webhook-Secret` is written as presence and length only |
 
-Custom fields are resolved by name: Dedup Key, Fix Location, Correlation Group, Cross-Repo Key, Risk Score, Agent Lane, PR URL. Set `JIRA_FIELD_*` to a `customfield_` id if the name lookup is not enough. Agent Lane is sent as a select value when Jira says the schema type is `option`. The project needs an Epic issue type, and the Epic workflow needs `Human Needed` and `Done`. Statuses used by the lane gate: `Ready for Agent`, `Human Needed`, `False Positive`, `In Progress`, `In Review`, `Done`.
+Custom fields are resolved by name: Dedup Key, Fix Location, Correlation Group, Cross-Repo Key, Risk Score, Agent Lane, PR URL. Set `JIRA_FIELD_*` to a `customfield_` id if the name lookup is not enough. Agent Lane is sent as a select value when Jira says the schema type is `option`. The project needs an Epic issue type, and the Epic workflow needs the human and done statuses below.
+
+Workflow status names default to the demo project and can be renamed to match the site:
+
+| Variable | Default | Role |
+|---|---|---|
+| `JIRA_STATUS_TRIGGER` | In Progress | Person moves the ticket here; the Jira rule calls `/intake` |
+| `JIRA_STATUS_AGENT_READY` | Ready for Agent | Intake sets this for an agent lane. Rename to Agent Needed if that is the workflow name. The rule on this status calls `/remediate` |
+| `JIRA_STATUS_HUMAN` | Human Needed | Intake sets this for human-only and parent tracking |
+| `JIRA_STATUS_FALSE_POSITIVE` | False Positive | Intake sets this for a false-positive candidate |
+| `JIRA_STATUS_WORKING` | In Progress | Remediate moves the ticket here while the cloud agent runs |
+| `JIRA_STATUS_IN_REVIEW` | In Review | Set when the pull request is open |
+| `JIRA_STATUS_DONE` | Done | Duplicates, stale closes, and finished parents |
 
 ## Jira rule changes
 
-Keep Wiz's native integration as it is. Point the existing automation webhooks at this server instead of the Cursor Automation URLs.
+Keep Wiz's native integration as it is. A person moves a triaged ticket to the trigger status (`JIRA_STATUS_TRIGGER`, default In Progress). Two automation rules then call this server. Both use header `X-Webhook-Secret: <WEBHOOK_SECRET>` and body `{"issueKey":"{{issue.key}}"}`.
 
-Rule 1, intake. When an issue is created and labels contain `wiz`, send:
+1. Intake. When an issue transitions to the trigger status, `POST https://<host>/intake`. Intake leaves that status for the lane: agent-ready (`JIRA_STATUS_AGENT_READY`, default Ready for Agent), human (`JIRA_STATUS_HUMAN`), false positive, or done for a duplicate. A second `/intake` after the `[cursor:intake]` comment and lane are set does not move the ticket again, so the later working transition does not loop.
 
-- `POST https://<host>/intake`
-- Header `X-Webhook-Secret: <WEBHOOK_SECRET>`
-- Body `{"issueKey":"{{issue.key}}"}`
+2. Remediate. When an issue transitions to the agent-ready status, labels contain `cursor-agent` or `cursor-agent-autopilot`, labels do not contain `parent`, and the issue type is not Epic, `POST https://<host>/remediate`. One URL covers every repo. The service reads `Code Repository:` / `IaC Source:` (and the image map) and launches the agent. If the ticket is not already in the working status, remediate moves it there, then to In Review when the pull request opens.
 
-Rule 2, remediate. When an issue transitions to In Progress, labels contain `cursor-agent` or `cursor-agent-autopilot`, labels do not contain `parent`, and the issue type is not Epic, send every matching ticket to the same URL:
-
-- `POST https://<host>/remediate`
-- Same secret header and the same `{"issueKey":"{{issue.key}}"}` body
-
-The three per-repo webhooks in the Automations kit collapse into this one URL. The service reads `Code Repository:` / `IaC Source:` (and the image map) and launches the agent on that repo. Both endpoints answer `202` immediately. Add `?wait=1` while curling locally if you want the JSON result in the response.
+Both endpoints answer `202` immediately. Add `?wait=1` while curling locally if you want the JSON result in the response.
 
 ## CLI
 

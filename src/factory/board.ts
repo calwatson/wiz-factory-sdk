@@ -1,4 +1,5 @@
 import type { EnrichmentIndex } from "./enrich.js";
+import { disposition } from "./gate.js";
 import { fixDifference } from "./maps.js";
 import { formatParentComment, higherPriority, parentSummary, type ParentChildLine } from "./parents.js";
 import { parseDescription } from "./parse.js";
@@ -38,7 +39,7 @@ export interface ClassifiedParent {
   crossRepoKey: string;
   repos: string[];
   lane: "PARENT_TRACKING";
-  jiraStatus: "Human Needed";
+  jiraStatus: string;
   priority: string;
   riskScore: number;
   children: Array<{
@@ -197,7 +198,7 @@ export function classifyBoard(tickets: NativeTicket[], enrichment: EnrichmentInd
       crossRepoKey: seed.key,
       repos,
       lane: "PARENT_TRACKING",
-      jiraStatus: "Human Needed",
+      jiraStatus: disposition("PARENT_TRACKING").status,
       priority,
       riskScore: risk,
       children,

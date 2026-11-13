@@ -1,4 +1,4 @@
-import type { FactoryConfig } from "../src/config.js";
+import { defaultJiraStatuses, type FactoryConfig } from "../src/config.js";
 import type { NativeTicket } from "../src/factory/csv.js";
 import { MemoryJira } from "../src/jira/memory.js";
 
@@ -20,6 +20,7 @@ export function testConfig(): FactoryConfig {
     skipReviewerRequest: true,
     dataDir: "data",
     logPayloads: true,
+    statuses: defaultJiraStatuses(),
     fieldOverrides: {},
   };
 }
